@@ -1,4 +1,5 @@
 #Felicia's version of control board 
+# Now modified by Stefan Hess starting 6/17/2021
 
 import time
 import serial
@@ -175,12 +176,18 @@ serial = serial.Serial("/dev/serial0", baudrate=921600, timeout=3.0)
 
 #call functions below-
 
-trayOpen()
+#trayOpen()
+#
+#time.sleep(5)
+#
+#trayClose()
+#
+#time.sleep(5)
+#
+#ccdCool()
 
-time.sleep(5)
+while(1):
+    laserOn()
+    time.sleep(5)
+    laserOff()
 
-trayClose()
-
-time.sleep(5)
-
-ccdCool()
