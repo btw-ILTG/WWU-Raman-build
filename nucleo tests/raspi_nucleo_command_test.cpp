@@ -13,60 +13,60 @@ DigitalOut cuvette_IN4(PC_0);
 Serial raspi(USBTX, USBRX, 9600);
 
 int z;
-const int mDelay = 1;
+const int usDelay = 1000;
 
 int openTray(){
     while (z < 500) {
         z++;
         grnLED = 1;
-        wait_ms(1);
+        wait_us(1);
         cuvette_IN1 = 0;
         cuvette_IN2 = 0;
         cuvette_IN3 = 0;
         cuvette_IN4 = 1;
-        wait_ms(mDelay);
+        wait_us(usDelay);
 
         cuvette_IN1 = 0;
         cuvette_IN2 = 0;
         cuvette_IN3 = 1;
         cuvette_IN4 = 1;
-        wait_ms(mDelay);
+        wait_us(usDelay);
 
         cuvette_IN1 = 0;
         cuvette_IN2 = 0;
         cuvette_IN3 = 1;
         cuvette_IN4 = 0;
-        wait_ms(mDelay);
+        wait_us(usDelay);
 
         cuvette_IN1 = 0;
         cuvette_IN2 = 1;
         cuvette_IN3 = 1;
         cuvette_IN4 = 0;
-        wait_ms(mDelay);
+        wait_us(usDelay);
 
         cuvette_IN1 = 0;
         cuvette_IN2 = 1;
         cuvette_IN3 = 0;
         cuvette_IN4 = 0;
-        wait_ms(mDelay);
+        wait_us(usDelay);
 
         cuvette_IN1 = 1;
         cuvette_IN2 = 1;
         cuvette_IN3 = 0;
         cuvette_IN4 = 0;
-        wait_ms(mDelay);
+        wait_us(usDelay);
 
         cuvette_IN1 = 1;
         cuvette_IN2 = 0;
         cuvette_IN3 = 0;
         cuvette_IN4 = 0;
-        wait_ms(mDelay);
+        wait_us(usDelay);
 
         cuvette_IN1 = 1;
         cuvette_IN2 = 0;
         cuvette_IN3 = 0;
         cuvette_IN4 = 1;
-        wait_ms(mDelay);
+        wait_us(usDelay);
     }
     cuvette_IN1 = 0;
     cuvette_IN2 = 0;        
