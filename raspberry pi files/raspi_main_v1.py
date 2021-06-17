@@ -172,7 +172,7 @@ def ccdCool():
     print(serial.readline())
     
 
-serial = serial.Serial("/dev/serial0", baudrate=921600, timeout=3.0)
+serial = serial.Serial("/dev/serial0", baudrate=9600, timeout=3.0)
 
 #call functions below-
 
@@ -190,4 +190,5 @@ while(1):
     laserOn()
     time.sleep(5)
     laserOff()
+    time.sleep(5)
 
