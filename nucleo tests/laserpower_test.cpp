@@ -6,7 +6,7 @@
 DigitalOut myled(LED1);
 DigitalOut relay(PA_1);
 
-int laserPower(int on){
+void laserPower(int on){
     if(on == 1){//turn laser on
         relay = 0;
         myled = 1;    
@@ -19,8 +19,8 @@ int laserPower(int on){
 int main() { 
     while(1) {
         laserPower(1);
-        wait(10);
+        wait_us(10000000);
         laserPower(0);
-        wait(10);
+        wait_us(10000000);
     }
 }
