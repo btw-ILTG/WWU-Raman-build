@@ -39,7 +39,7 @@ def laserOn():
     serial.write(laser_on)
     serial.write(packet_flag)
     serial.write(packet_start)
-    print(serial.readline())
+    serial.readline()
 
 def laserOff():
     print 'req laser off.\n'
@@ -69,8 +69,8 @@ def shutterClose():
     serial.write(shutter_close)
     serial.write(packet_flag)
     serial.write(packet_start)
-    print(serial.readline())
-    
+    print(serial.readline()) 
+
 def laserTemp():
     print 'req laser temp.\n'
     serial.write(packet_start)
@@ -187,6 +187,7 @@ serial = serial.Serial("/dev/serial0", baudrate=9600, timeout=3.0)
 #ccdCool()
 
 while(1):
+
     laserOn()
     time.sleep(5)
     laserOff()
