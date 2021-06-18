@@ -6,14 +6,13 @@
 #define packet_start        0xF0
 #define laser_on       	    0xA1
 #define laser_off           0xA2
-#define MAXIMUM_BUFFER_SIZE 8
 
 static UnbufferedSerial raspi(D1, D0, 9600);
 
 const int usDelay = 1000;
 
-DigitalOut myled(LED1);
-DigitalOut relay(PA_1);
+static DigitalOut myled(LED1);
+static DigitalOut relay(PA_1);
 
 void laserPower(int on){
     if(on == 1){//turn laser on
@@ -28,14 +27,14 @@ void laserPower(int on){
 }
 void on_rx_interrupt()
 {
-    char c;
-
+    raspi.write("Hello there\n",12);
+    char c[6] = {0};
     // Read the data to clear the receive interrupt.
-    raspi.read(&c, 1);
+    ssize_t readReturn = raspi.read(&c, 6);
 
-    if (c == 0xA1) {
+    if (c[3] == 0xA1) {
         laserPower(1);
-    } else if (c == 0xA2) {
+    } else if (c[3] == 0xA2) {
         laserPower(0);
     }
 }
@@ -44,9 +43,8 @@ int main(){
     raspi.format(
         /* bits */ 8,
         /* parity */ SerialBase::None,
-        /* stop bit */ 0
+        /* stop bit */ 1
     );
-
     // Initialize laser to off
     laserPower(0);
 
