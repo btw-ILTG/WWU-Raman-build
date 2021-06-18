@@ -1,12 +1,14 @@
 // Testing communication between raspberry pi and the nucleo board
 // With the laser power on
 #include "mbed.h"
+#include <cstdint>
 
-#define packet_start    0xF0
-#define laser_on       	0xA1
-#define laser_off       0xA2
+#define packet_start        0xF0
+#define laser_on       	    0xA1
+#define laser_off           0xA2
+#define MAXIMUM_BUFFER_SIZE 8
 
-Serial raspi(USBTX, USBRX, 9600);
+static UnbufferedSerial raspi(D1, D0, 9600);
 
 const int usDelay = 1000;
 
@@ -22,30 +24,33 @@ void laserPower(int on){
         relay = 1;
         myled = 0;
     }
+
+}
+void on_rx_interrupt()
+{
+    char c;
+
+    // Read the data to clear the receive interrupt.
+    raspi.read(&c, 1);
+
+    if (c == 0xA1) {
+        laserPower(1);
+    } else if (c == 0xA2) {
+        laserPower(0);
+    }
 }
 
 int main(){
-    while(1){
-        if(raspi.readable()==1){
-            switch (raspi.getc()){
-                case packet_start:
-                    switch (raspi.getc()){
-                        case laser_on:
-							laserPower(1);
-                            raspi.printf("Powering on laser\n");
-                            continue;
-						case laser_off:
-							laserPower(0);
-                            raspi.printf("Powering off laser\n");
-                        default:
-                            raspi.printf("Fail power on laser\n");
-                            continue;
-                    } 
-                default:
-                    raspi.printf("Fail Switch One\n");
-                    continue;
-                    
-            }    
-        }
-    }
+    raspi.format(
+        /* bits */ 8,
+        /* parity */ SerialBase::None,
+        /* stop bit */ 0
+    );
+
+    // Initialize laser to off
+    laserPower(0);
+
+    // Register a callback to process a Rx (receive) interrupt.
+    raspi.attach(&on_rx_interrupt, SerialBase::RxIrq);
+    
 }
