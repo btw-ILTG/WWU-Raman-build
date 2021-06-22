@@ -37,8 +37,7 @@ def laserOn():
     serial.write(packet_flag)
     serial.write(cmd_laser)
     serial.write(laser_on)
-    serial.write(packet_flag)
-    serial.write(packet_start)
+    serial.write(packet_end)
     print(serial.readline())
 
 def laserOff():
@@ -47,8 +46,7 @@ def laserOff():
     serial.write(packet_flag)
     serial.write(cmd_laser)
     serial.write(laser_off)
-    serial.write(packet_flag)
-    serial.write(packet_start)
+    serial.write(packet_end)
     print(serial.readline())
 
 def shutterOpen():
@@ -57,8 +55,7 @@ def shutterOpen():
     serial.write(packet_flag)
     serial.write(cmd_laser)
     serial.write(shutter_open)
-    serial.write(packet_flag)
-    serial.write(packet_start)
+    serial.write(packet_end)
     print(serial.readline())
     
 def shutterClose():
@@ -67,8 +64,7 @@ def shutterClose():
     serial.write(packet_flag)
     serial.write(cmd_laser)
     serial.write(shutter_close)
-    serial.write(packet_flag)
-    serial.write(packet_start)
+    serial.write(packet_end)
     print(serial.readline()) 
 
 def laserTemp():
@@ -77,8 +73,7 @@ def laserTemp():
     serial.write(packet_flag)
     serial.write(cmd_laser)
     serial.write(laser_temp)
-    serial.write(packet_flag)
-    serial.write(packet_start)
+    serial.write(packet_end)
     print(serial.readline())
     
 def trayOpen():
@@ -87,8 +82,7 @@ def trayOpen():
     serial.write(packet_flag)
     serial.write(cmd_cuvette)
     serial.write(tray_open)
-    serial.write(packet_flag)
-    serial.write(packet_start)
+    serial.write(packet_end)
     print(serial.readline())
 
 def trayClose():
@@ -97,8 +91,7 @@ def trayClose():
     serial.write(packet_flag)
     serial.write(cmd_cuvette)
     serial.write(tray_close)
-    serial.write(packet_flag)
-    serial.write(packet_start)
+    serial.write(packet_end)
     print(serial.readline())
     
 def trayHeat():
@@ -107,8 +100,7 @@ def trayHeat():
     serial.write(packet_flag)
     serial.write(cmd_cuvette)
     serial.write(tray_heat)
-    serial.write(packet_flag)
-    serial.write(packet_start)
+    serial.write(packet_end)
     print(serial.readline())
     
 def trayCool():
@@ -117,8 +109,7 @@ def trayCool():
     serial.write(packet_flag)
     serial.write(cmd_cuvette)
     serial.write(tray_cool)
-    serial.write(packet_flag)
-    serial.write(packet_start)
+    serial.write(packet_end)
     print(serial.readline())
     
 def trayTemp():
@@ -127,8 +118,7 @@ def trayTemp():
     serial.write(packet_flag)
     serial.write(cmd_cuvette)
     serial.write(tray_temp)
-    serial.write(packet_flag)
-    serial.write(packet_start)
+    serial.write(packet_end)
     print(serial.readline())
 
 def filterForward():
@@ -137,8 +127,7 @@ def filterForward():
     serial.write(packet_flag)
     serial.write(cmd_filter)
     serial.write(filter_forward)
-    serial.write(packet_flag)
-    serial.write(packet_start)
+    serial.write(packet_end)
     print(serial.readline())
     
 def filterBack():
@@ -147,8 +136,7 @@ def filterBack():
     serial.write(packet_flag)
     serial.write(cmd_filter)
     serial.write(filter_back)
-    serial.write(packet_flag)
-    serial.write(packet_start)
+    serial.write(packet_end)
     print(serial.readline())
 
 def ccdHeat():
@@ -157,8 +145,7 @@ def ccdHeat():
     serial.write(packet_flag)
     serial.write(cmd_ccd_pelt)
     serial.write(ccd_heat)
-    serial.write(packet_flag)
-    serial.write(packet_start)
+    serial.write(packet_end)
     print(serial.readline())
     
 def ccdCool():
@@ -167,8 +154,7 @@ def ccdCool():
     serial.write(packet_flag)
     serial.write(cmd_ccd_pelt)
     serial.write(ccd_cool)
-    serial.write(packet_flag)
-    serial.write(packet_start)
+    serial.write(packet_end)
     print(serial.readline())
     
 

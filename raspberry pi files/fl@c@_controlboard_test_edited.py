@@ -1,5 +1,6 @@
 #fl@c@'s control board test
 #controlBoard_test_02.py
+# Edited by Stefan starting 6/21/2021
 #------------
 #!/usr/bin/python
  
@@ -73,7 +74,7 @@ if __name__ == '__main__':
     welcomeMsg();
     t0 = time.time()
     serial = serial.Serial()
-    port = '/dev/ttyAMA0'
+    port = "/dev/ttyAMA0"
     baudrate = 9600
     try:
         opts, args = getopt.getopt(sys.argv[1:],"hp:b:",["port=","baudrate="])
@@ -88,7 +89,7 @@ if __name__ == '__main__':
             port = arg
         elif opt in ("-b", "--baudrate"):
             baudrate = int(arg)
-    initSerial("/dev/serial0", baudrate)
+    initSerial(port, baudrate)
  
     thread.start_new_thread( readSerial , ("controlBoard", 2, ))
  
