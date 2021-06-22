@@ -7,7 +7,7 @@
 #define laser_on       	    0xA1
 #define laser_off           0xA2
 
-static UnbufferedSerial raspi(D1, D0, 9600);
+static BufferedSerial raspi(D8, D2, 9600);
 
 const int usDelay = 1000;
 
@@ -25,30 +25,29 @@ void laserPower(int on){
     }
 
 }
-void on_rx_interrupt()
-{
-    raspi.write("Hello there\n",12);
-    char c[6] = {0};
-    // Read the data to clear the receive interrupt.
-    ssize_t readReturn = raspi.read(&c, 6);
-
-    if (c[3] == 0xA1) {
-        laserPower(1);
-    } else if (c[3] == 0xA2) {
-        laserPower(0);
-    }
-}
 
 int main(){
-    raspi.format(
+    raspi.set_format(
         /* bits */ 8,
-        /* parity */ SerialBase::None,
+        /* parity */ BufferedSerial::None,
         /* stop bit */ 1
     );
     // Initialize laser to off
     laserPower(0);
 
     // Register a callback to process a Rx (receive) interrupt.
-    raspi.attach(&on_rx_interrupt, SerialBase::RxIrq);
+    while(true) {
+        char c;
+       
+        if (ssize_t num = raspi.read(&c, 1)) {
+            if (c == laser_on) {
+                laserPower(1);
+                raspi.write("Laser on\n",9);
+            } else if (c == laser_off) {
+                laserPower(0);
+                raspi.write("Laser off\n",10);
+            }
+        }
+    }
     
 }
