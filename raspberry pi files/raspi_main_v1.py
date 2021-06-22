@@ -39,7 +39,7 @@ def laserOn():
     serial.write(laser_on)
     serial.write(packet_flag)
     serial.write(packet_start)
-    serial.readline()
+    print(serial.readline())
 
 def laserOff():
     print 'req laser off.\n'
@@ -172,7 +172,7 @@ def ccdCool():
     print(serial.readline())
     
 
-serial = serial.Serial("/dev/serial0", baudrate=9600, timeout=3.0)
+serial = serial.Serial("/dev/ttyAMA0", baudrate=9600, write_timeout=3.0, stopbits=1)
 
 #call functions below-
 
@@ -189,7 +189,11 @@ serial = serial.Serial("/dev/serial0", baudrate=9600, timeout=3.0)
 while(1):
 
     laserOn()
+    print("laser_on")
+    #serial.write(laser_on)
     time.sleep(5)
     laserOff()
+    print("laser_off")
+    #serial.write(laser_off)
     time.sleep(5)
 
