@@ -122,7 +122,7 @@ public:
     static unsigned short crc16(unsigned short* data, unsigned short len);
 
 private:
-    const int* timing;
+    const double* timing;
     
     BYTE address[8];
     int searchJunction;        // so we can set to it -1 somewhere

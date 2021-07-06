@@ -6,7 +6,7 @@
 #define THERMOMETER DS18B20
 
 THERMOMETER device(PC_8);
-Serial raspi(USBTX, USBRX);
+BufferedSerial raspi(D8, D2);
 DigitalOut grnled(LED1);
 
 float temp;
@@ -15,16 +15,27 @@ void readTemp(int deviceNum)
 {
    temp = device.readTemperature(deviceNum);
     if(deviceNum == 0){
-        raspi.printf("Cuvette Temp: %.3f degrees Celsius.\n", temp);
+        printf("Cuvette Temp: %.3f degrees Celsius.\n", temp);
     }
     if(deviceNum == 1){
-        raspi.printf("Laser Temp: %.3f degrees Celsius.\n", temp);
+        printf("Laser Temp: %.3f degrees Celsius.\n", temp);
     }
 }
 
+FileHandle *mbed::mbed_override_console(int fd) {
+    return &raspi;
+}
+
+
+
 int main(){
-    raspi.baud(9600);
-    wait(2);
+    raspi.set_baud(9600);
+    raspi.set_format(
+        /* bits */ 8,
+        /* parity */ BufferedSerial::None,
+        /* stop bit */ 1
+    );
+    wait_us(2000000);
     device.initialize();
     int deviceCount = device.getDeviceCount();
     
@@ -34,19 +45,19 @@ int main(){
             grnled = 1;
             switch (deviceCount){
                 case 0:
-                    raspi.printf("deviceCount is zero.\n");
+                    printf("deviceCount is zero.\n");
                     continue;
                 case 1:
-                    raspi.printf("deviceCount is one.\n");
+                    printf("deviceCount is one.\n");
                     continue;
                 case 2:
-                    raspi.printf("deviceCount is two.\n");
+                    printf("deviceCount is two.\n");
                     readTemp(0);
-                    wait(1);
+                    wait_us(1000000);
                     readTemp(1);
                     continue;
                 default:
-                    raspi.printf("deviceCount is something else.\n");
+                    printf("deviceCount is something else.\n");
                     break;    
             }    
         }
