@@ -3,15 +3,13 @@
 
 #include "commandCodes.h"
 
-#define packet_start        0xF0
-#define packet_flag         0xF2
-#define packet_end          0xF3
-
-#define control_board       0xA0
-
 static BufferedSerial raspi(D8, D2, 9600);
 
 static DigitalOut myled(LED1);
+
+FileHandle *mbed::mbed_override_console(int fd) {
+    return &raspi;
+}
 
 char readChar(BufferedSerial *serialDevice) {
     char c;
