@@ -1,6 +1,8 @@
 #include "mbed.h"
 #include <cstdint>
 
+#include "commandCodes.h"
+
 #define packet_start        0xF0
 #define packet_flag         0xF2
 #define packet_end          0xF3
