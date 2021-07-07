@@ -86,8 +86,8 @@ sample code bearing this copyright.
 #include "OneWireDefs.h"
 
 // recommended data sheet timings in micro seconds
-const int standardT[] = {6, 64, 60, 10, 9, 55, 0, 480, 70, 410};
-const int overdriveT[] = {1.5, 7.5, 7.5, 2.5, 0.75, 7, 2.5, 70, 8.5, 40};
+const double standardT[] = {6, 64, 60, 10, 9, 55, 0, 480, 70, 410};
+const double overdriveT[] = {1.5, 7.5, 7.5, 2.5, 0.75, 7, 2.5, 70, 8.5, 40};
 
 OneWireCRC::OneWireCRC(PinName oneWire, eSpeed speed) : oneWirePort(oneWire)
 {

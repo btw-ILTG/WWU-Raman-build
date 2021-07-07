@@ -59,7 +59,7 @@ bool OneWireThermometer::initialize()
     if (OneWireCRC::crc8(address, ADDRESS_CRC_BYTE) != address[ADDRESS_CRC_BYTE])   // check address CRC is valid
     {
         //pc.traceOut("CRC is not valid!\r\n");
-        wait(2);
+        wait_us(2000000);
         return false;
     }
 
@@ -73,7 +73,7 @@ bool OneWireThermometer::initialize()
         else{}
          // pc.traceOut("Device is not a DS18B20/DS1820/DS18S20 device.\r\n");
         
-        wait(2);
+        wait_us(2000000);
         return false;   
     }
     else
@@ -138,7 +138,7 @@ float OneWireThermometer::readTemperature(int device)
     oneWire.writeByte(CONVERT);     // issue Convert command
     
     // Removed the check for parasitic power, since we waited the same time anyway.
-    wait_ms(CONVERSION_TIME[resolution]);
+    wait_us(CONVERSION_TIME[resolution] * 1000);
 
     if (readAndValidateData(data))    // issue Read Scratchpad commmand and get data
     {
