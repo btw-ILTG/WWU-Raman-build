@@ -1,0 +1,6 @@
+controlBoard/.build
+controlBoard/.mbed
+controlBoard/projectfiles
+controlBoard/*.py*
+controlBoard/mbed-os
+controlBoard/BUILD
