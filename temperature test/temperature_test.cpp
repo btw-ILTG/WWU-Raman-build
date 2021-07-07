@@ -35,8 +35,9 @@ int main(){
         /* parity */ BufferedSerial::None,
         /* stop bit */ 1
     );
-    wait_us(2000000);
-    device.initialize();
+    wait_us(2000000);       // DO NOT PUT ANYTHING IN BETWEEN THESE LINES!!
+    device.initialize();    // I don't know why but it won't recognize devices if you do
+    printf("Initialized\n");
     int deviceCount = device.getDeviceCount();
     
     device.setResolution(twelveBit);
