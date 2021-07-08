@@ -4,3 +4,9 @@ controlBoard/projectfiles
 controlBoard/*.py*
 controlBoard/mbed-os
 controlBoard/BUILD
+packetForge/.build
+packetForge/.mbed
+packetForge/projectfiles
+packetForge/*.py*
+packetForge/mbed-os
+packetForge/BUILD
