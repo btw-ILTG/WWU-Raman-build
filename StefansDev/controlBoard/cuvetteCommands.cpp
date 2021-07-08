@@ -2,8 +2,6 @@
 
 #include "pinouts.h"
 #include "cuvetteCommands.h"
-#include "DS18B20.h"
-#include "OneWireDefs.h"
 
 int openTray(int uDelay) {
     while (cuvetteCounter < 500) {
