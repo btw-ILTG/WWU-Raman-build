@@ -5,12 +5,14 @@
 
 class SerialPacket {
     private:
-        char recieveBuffer[RX_BUFFER_SIZE];
-        char transmitBuffer[TX_BUFFER_SIZE];
+        BufferedSerial serial_port;
+
+        char recieveBuffer[RX_BUFFER_SIZE] = {0};
+        char transmitBuffer[TX_BUFFER_SIZE] = {0};
 
 
     public:
-        SerialPacket();
+        SerialPacket(PinName tx, PinName rx);
         void writeSerialPacket();
         void readSerialPacket();
 };
