@@ -1,6 +1,6 @@
 #include "PinNames.h"
 #include "mbed.h"
-#include "SerialPacket.h"
+#include "SerialPort.h"
 #include "CommandCodes.h"
 
 //FileHandle *mbed::mbed_override_console(int fd) {
@@ -10,14 +10,15 @@
 // Flags
 #define READ_FLAG   0x1
 
-static DigitalOut led(LED1);
+//static DigitalOut led(LED1);
 
 Thread thread;
 Thread serialRead;
 Thread serialWrite;
-//SerialPacket raspi(D8, D2, 9600);
-static BufferedSerial raspi(D8, D2, 9600);
 
+//static BufferedSerial raspi(D8, D2, 9600);
+
+/*
 void writeThread() {
     int counter = 0;
     char write_packet[PACKET_LENGTH] = {0};
@@ -37,6 +38,7 @@ void writeThread() {
     }
 }
 
+
 void readThread() {
     char buf[RX_BUFFER_SIZE] = {0};
     while (true) {
@@ -50,6 +52,7 @@ void readThread() {
     }
 }
 
+
 void dispatchThread() {
     while (true) {
         ThisThread::sleep_for(100ms);
@@ -58,11 +61,42 @@ void dispatchThread() {
         serialWrite.flags_set(0x2);
     }
 }
+*/
+
+static DigitalOut led(LED1);
 
 // main() runs in its own thread in the OS
 int main() {
     //SerialPacket raspi(D8, D2, 9600);
-    thread.start(callback(dispatchThread));
-    serialRead.start(callback(readThread));
-    serialWrite.start(callback(writeThread));
+    //thread.start(callback(dispatchThread));
+    //serialRead.start(callback(readThread));
+    //serialWrite.start(callback(writeThread));
+
+    SerialPort raspi(D8, D2, 9600);
+    vector<char> test = {'H', 'e', 'l', 'l', 'o', '\n'};
+    vector<char> test1 = {'Y', 'o', '\n'};
+    //while (true) {
+    //led = 0;
+    wait_us(1000000);
+
+    //while (true) {
+    //    wait_us(500000);
+        led = !led;
+        raspi.writeSerialPacket(test);
+        raspi.writeSerialPacket(test1);
+    //}
+
+    //while (raspi.writeSerialPacket(test) != 0) {
+        //led = !led;
+    //}
+    /*
+    if (write_status == -1) {
+        led = 0;
+    } else {
+        led = 1;
+    }
+    */
+    //wait_us(1000000);
+    //}
+    return 0;
 }

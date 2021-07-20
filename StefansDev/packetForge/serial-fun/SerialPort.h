@@ -1,5 +1,6 @@
 #include "mbed.h"
-#include "SerialPacket.h"
+#include <vector>
+
 
 class SerialPort {
     private:
@@ -7,6 +8,6 @@ class SerialPort {
 
     public:
         SerialPort(PinName tx, PinName rx, int baud);
-        int writeSerialPacket(SerialPacket tx_packet);
-        int readSerialPacket(SerialPacket rx_packet);
+        int writeSerialPacket(vector<char> tx_packet);
+        int readSerialPacket(vector<char> rx_packet);
 };
