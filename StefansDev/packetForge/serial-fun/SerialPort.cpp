@@ -2,7 +2,7 @@
 #include <vector>
 #include "SerialPort.h"
 
-
+//static DigitalOut led(LED1);
 
 SerialPort::SerialPort(PinName tx, PinName rx, int baud) : 
                                         serial_port(tx, rx, baud) {
@@ -11,11 +11,12 @@ SerialPort::SerialPort(PinName tx, PinName rx, int baud) :
 int SerialPort::writeSerialPacket(vector<char> tx_packet) {
     if (this->serial_port.writable() == 1) {
         for (int i = 0; i < tx_packet.size(); i++) {
-            //while (this->serial_port.writable() == 0) {
+            while (this->serial_port.writable() == 0) {
                 // pause thread until can be written
-                //ThisThread::sleep_for(1ms);
+                //led = !led;
+                ThisThread::sleep_for(1ms);
                 //wait_us(10);
-            //}
+            }
             this->serial_port.write(&tx_packet.at(i), sizeof(tx_packet.at(i)));
         }
         return 0;

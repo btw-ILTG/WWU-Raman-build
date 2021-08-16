@@ -1,11 +1,9 @@
+#include "BufferedSerial.h"
 #include "PinNames.h"
 #include "mbed.h"
 #include "SerialPort.h"
 #include "CommandCodes.h"
 
-//FileHandle *mbed::mbed_override_console(int fd) {
-//        return &raspi;
-//}
 
 // Flags
 #define READ_FLAG   0x1
@@ -15,8 +13,6 @@
 Thread thread;
 Thread serialRead;
 Thread serialWrite;
-
-//static BufferedSerial raspi(D8, D2, 9600);
 
 /*
 void writeThread() {
@@ -73,18 +69,29 @@ int main() {
     //serialWrite.start(callback(writeThread));
 
     SerialPort raspi(D8, D2, 9600);
+
     vector<char> test = {'H', 'e', 'l', 'l', 'o', '\n'};
     vector<char> test1 = {'Y', 'o', '\n'};
     //while (true) {
     //led = 0;
-    wait_us(1000000);
+    //wait_us(1000000);
 
-    //while (true) {
-    //    wait_us(500000);
+    int loop_count = 0;
+    vector<char> loop;
+    loop.push_back('0');
+    while (true) {
+        loop_count++;
+        loop.at(0) = loop_count;
+        raspi.writeSerialPacket(loop);
+        wait_us(1000000);
         led = !led;
-        raspi.writeSerialPacket(test);
-        raspi.writeSerialPacket(test1);
-    //}
+        while (raspi.writeSerialPacket(test) == -1) {
+            ThisThread::sleep_for(1ms);    
+        }
+        while (raspi.writeSerialPacket(test1) == -1) {
+            ThisThread::sleep_for(1ms);
+        }
+    }
 
     //while (raspi.writeSerialPacket(test) != 0) {
         //led = !led;
