@@ -3,6 +3,7 @@
 #include "mbed.h"
 #include "SerialPort.h"
 #include "CommandCodes.h"
+#include "mbed_wait_api.h"
 
 
 // Flags
@@ -70,40 +71,19 @@ int main() {
 
     SerialPort raspi(D8, D2, 9600);
 
-    vector<char> test = {'H', 'e', 'l', 'l', 'o', '\n'};
+    vector<char> test = {'R', 'e', 'a', 'd', '\n'};
     vector<char> test1 = {'Y', 'o', '\n'};
-    //while (true) {
-    //led = 0;
-    //wait_us(1000000);
 
-    int loop_count = 0;
-    vector<char> loop;
-    loop.push_back('0');
-    while (true) {
-        loop_count++;
-        loop.at(0) = loop_count;
-        raspi.writeSerialPacket(loop);
-        wait_us(1000000);
-        led = !led;
-        while (raspi.writeSerialPacket(test) == -1) {
-            ThisThread::sleep_for(1ms);    
-        }
-        while (raspi.writeSerialPacket(test1) == -1) {
-            ThisThread::sleep_for(1ms);
-        }
+    vector<char> test_read;
+    //volatile int status;
+    //status = raspi.readSerialPacket(test_read);    
+    
+    while (raspi.readSerialPacket(test_read) == -1) {
+        ThisThread::sleep_for(11ms);
     }
 
-    //while (raspi.writeSerialPacket(test) != 0) {
-        //led = !led;
-    //}
-    /*
-    if (write_status == -1) {
-        led = 0;
-    } else {
-        led = 1;
-    }
-    */
-    //wait_us(1000000);
-    //}
+    raspi.writeSerialPacket(test);
+    raspi.writeSerialPacket(test_read);
+
     return 0;
 }
