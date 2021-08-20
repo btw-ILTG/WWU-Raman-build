@@ -1,5 +1,5 @@
 /*
-
+                    OMIT?
 |‾‾‾‾‾‾‾‾‾‾‾‾‾‾|‾‾‾‾‾‾‾‾‾‾‾‾‾|‾‾‾‾˙˙˙˙‾‾‾‾|‾‾‾‾‾‾‾‾‾‾‾‾|
 | packet_start | packet_flag |            | packet_end |
 |______________|_____________|____̣̣ ̣ ̣ ̣ ____|____________|
@@ -12,7 +12,7 @@
 // the ramanPi project
 
 #define packet_start        0xF0
-#define packet_flag         0xF2
+#define packet_flag         0xF2 // likely not needed
 #define packet_end          0xF3
 
 #define cmd_laser           0xA0

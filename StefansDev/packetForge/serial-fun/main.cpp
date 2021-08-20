@@ -71,10 +71,10 @@ int main() {
 
     SerialPort raspi(D8, D2, 9600);
 
-    vector<char> test = {'R', 'e', 'a', 'd', '\n'};
-    vector<char> test1 = {'Y', 'o', '\n'};
+    vector<uint8_t> test = {'R', 'e', 'a', 'd', '\n'};
+    vector<uint8_t> test1 = {'Y', 'o', '\n'};
 
-    vector<char> test_read;
+    vector<uint8_t> test_read;
     //volatile int status;
     //status = raspi.readSerialPacket(test_read);    
     
