@@ -14,6 +14,9 @@ instructions to the three nucleo stm32f401re boards.
 #define packet_flag         0xF2 // likely not needed (I will OMIT)
 #define packet_end          0xF3
 #define packet_ok			0xF4
+#define packet_int			0xF6 // flags to indicate what kind
+#define packet_float		0xF7 // of data is being sent in the
+#define packet_double		0xF8 // packet
 #define packet_error		0xFF
 
 #define cmd_laser           0xA0

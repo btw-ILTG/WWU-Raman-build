@@ -1,8 +1,8 @@
 /*
-                    OMIT?
-|‾‾‾‾‾‾‾‾‾‾‾‾‾‾|‾‾‾‾‾‾‾‾‾‾‾‾‾|‾‾‾‾˙˙˙˙‾‾‾‾|‾‾‾‾‾‾‾‾‾‾‾‾|
-| packet_start | packet_flag |            | packet_end |
-|______________|_____________|____̣̣ ̣ ̣ ̣ ____|____________|
+
+|‾‾‾‾‾‾‾‾‾‾‾‾‾‾|‾‾‾‾˙˙˙˙‾‾‾‾|‾‾‾‾‾‾‾‾‾‾‾‾|
+| packet_start |            | packet_end |
+|______________|____̣̣ ̣ ̣ ̣ ____|____________|
 
 */
 
@@ -14,6 +14,8 @@
 #define packet_start        0xF0
 #define packet_flag         0xF2 // likely not needed
 #define packet_end          0xF3
+#define packet_ok           0xF4
+#define packet_error        0xFF
 
 #define cmd_laser           0xA0
 #define laser_on       	    0xA1
