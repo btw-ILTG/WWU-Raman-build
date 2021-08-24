@@ -14,7 +14,7 @@ This must be called with a vector that contains a full
 serial packet. 
     i.e. packet_start, packet_flag, ... , packet_end
 ***********************************************************/
-int SerialPort::writeSerialPacket(vector<uint8_t> tx_packet) {
+int SerialPort::writeSerialPacket(vector<uint8_t> &tx_packet) {
     if (this->serial_port.writable() == 1) {
         for (int i = 0; i < tx_packet.size(); i++) {
             while (this->serial_port.writable() == 0) {

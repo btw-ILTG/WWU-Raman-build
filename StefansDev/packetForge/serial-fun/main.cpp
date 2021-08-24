@@ -11,9 +11,9 @@
 
 //static DigitalOut led(LED1);
 
-Thread thread;
-Thread serialRead;
-Thread serialWrite;
+//Thread thread;
+//Thread serialRead;
+//Thread serialWrite;
 
 /*
 void writeThread() {
@@ -62,26 +62,27 @@ void dispatchThread() {
 
 static DigitalOut led(LED1);
 
-vector<uint8_t> doubleToVector(double *double_convert) {
-    uint8_t *double_convert_pointer = (uint8_t *) *&double_convert; 
+vector<uint8_t> doubleToVector(double* double_convert) {
+    uint8_t* double_convert_pointer = (uint8_t *) *&double_convert; 
     vector<uint8_t> vector_double;
     for (int i = 0; i < sizeof(double); i++) {
         vector_double.push_back(double_convert_pointer[i]);
     }
     return vector_double;
 }
-
-vector<uint8_t> doubleToVector(double *double_convert, int size) {
-    uint8_t *double_convert_pointer = (uint8_t *) *&double_convert; 
+// try using test.insert(std::end(test), std::begin(test2), std::end(test2));
+// to clone the array into the vector
+vector<uint8_t> doubleToVector(double* double_convert, int size) {
+    uint8_t* double_convert_pointer = (uint8_t *) double_convert; 
     vector<uint8_t> vector_double;
     for (int i = 0; i < size; i++) {
-        vector_double.push_back(double_convert_pointer[i]);
+        vector_double.push_back(*(double_convert_pointer + i));
     }
     return vector_double;
 }
 
-vector<uint8_t> floatToVector(float *float_convert) {
-    uint8_t *float_convert_pointer = (uint8_t *) *&float_convert; 
+vector<uint8_t> floatToVector(float* float_convert) {
+    uint8_t* float_convert_pointer = (uint8_t *) *&float_convert; 
     vector<uint8_t> vector_float;
     for (int i = 0; i < sizeof(float); i++) {
         vector_float.push_back(float_convert_pointer[i]);
@@ -89,8 +90,17 @@ vector<uint8_t> floatToVector(float *float_convert) {
     return vector_float;
 }
 
-vector<uint8_t> intToVector(int *int_convert) {
-    uint8_t *int_convert_pointer = (uint8_t *) *&int_convert; 
+vector<uint8_t> floatToVector(float* float_convert, int size) {
+    uint8_t* float_convert_pointer = (uint8_t *) float_convert; 
+    vector<uint8_t> vector_float;
+    for (int i = 0; i < size; i++) {
+        vector_float.push_back(*(float_convert_pointer + i));
+    }
+    return vector_float;
+}
+
+vector<uint8_t> intToVector(int* int_convert) {
+    uint8_t* int_convert_pointer = (uint8_t *) *&int_convert; 
     vector<uint8_t> vector_int;
     for (int i = 0; i < sizeof(int); i++) {
         vector_int.push_back(int_convert_pointer[i]);
@@ -113,9 +123,12 @@ int main() {
     vector<uint8_t> test2 = floatToVector(&number2);
     test.insert(std::end(test), std::begin(test2), std::end(test2));
 */  
-    double double_array[2] = { 42.0, 69.0};
+    double double_array[2] = {42.0, 69.0};
     vector<uint8_t> test = doubleToVector(double_array, sizeof(double_array));
     
+    //float float_array[2] = {42.0, 69.0};
+    //vector<uint8_t> test = floatToVector(float_array, sizeof(float_array));
+
     test.push_back(0xF3);
     raspi.writeSerialPacket(test);
     //vector<uint8_t> test = { uint8_t(-11), 0xF3 };
