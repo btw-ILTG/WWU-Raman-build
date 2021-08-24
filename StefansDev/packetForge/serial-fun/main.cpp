@@ -74,7 +74,7 @@ vector<uint8_t> doubleToVector(double* double_convert) {
 // to clone the array into the vector
 vector<uint8_t> doubleToVector(double* double_convert, int size) {
     uint8_t* double_convert_pointer = (uint8_t *) double_convert; 
-    vector<uint8_t> vector_double(double_convert, double_convert + size);
+    vector<uint8_t> vector_double(double_convert_pointer, double_convert_pointer + size);
     //for (int i = 0; i < size; i++) {
     //    vector_double.push_back(*(double_convert_pointer + i));
     //}
@@ -123,7 +123,7 @@ int main() {
     vector<uint8_t> test2 = floatToVector(&number2);
     test.insert(std::end(test), std::begin(test2), std::end(test2));
 */  
-    double double_array[2] = {42.0, 69.0};
+    double double_array[6] = {42.0, 69.0, 420.0, 343.0, 1125.0, 299792458.0};
     vector<uint8_t> test = doubleToVector(double_array, sizeof(double_array));
     
     //float float_array[2] = {42.0, 69.0};
@@ -131,6 +131,7 @@ int main() {
 
     test.push_back(0xF3);
     raspi.writeSerialPacket(test);
+    
     //vector<uint8_t> test = { uint8_t(-11), 0xF3 };
     //vector<uint8_t> test1 = {'Y', 'o', '\n'};
 

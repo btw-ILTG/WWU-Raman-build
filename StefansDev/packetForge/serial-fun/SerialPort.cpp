@@ -16,22 +16,23 @@ serial packet.
 ***********************************************************/
 int SerialPort::writeSerialPacket(vector<uint8_t> &tx_packet) {
     if (this->serial_port.writable() == 1) {
-        for (int i = 0; i < tx_packet.size(); i++) {
-            while (this->serial_port.writable() == 0) {
-                // pause thread until can be written
-                // Note: serial_port.writable() is still
-                // writable even if nothing is plugged
-                // in to that port.
-                ThisThread::sleep_for(11ms);
-            }
-            // use the vector like an array
-            // this fixes the issue where I could not read
-            // two doubles from the serial port in python
-            uint8_t* write_me = &tx_packet[0];
-            
-            this->serial_port.write(write_me, tx_packet.size());
+        /*
+        while (this->serial_port.writable() == 0) {
+            // pause thread until can be written
+            // Note: serial_port.writable() is still
+            // writable even if nothing is plugged
+            // in to that port.
+            ThisThread::sleep_for(11ms);
         }
-        ThisThread::sleep_for(11ms);
+        */
+
+        // use the vector like an array
+        // this fixes the issue where I could not read
+        // two doubles from the serial port in python
+        uint8_t* write_me = &tx_packet[0];
+        this->serial_port.write(write_me, tx_packet.size());
+        
+        ThisThread::sleep_for(100ms);
         return 0;
     } else {
         // serial_port does not have space to write a character
