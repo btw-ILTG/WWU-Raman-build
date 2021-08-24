@@ -24,7 +24,12 @@ int SerialPort::writeSerialPacket(vector<uint8_t> &tx_packet) {
                 // in to that port.
                 ThisThread::sleep_for(11ms);
             }
-            this->serial_port.write(&tx_packet.at(i), sizeof(tx_packet.at(i)));
+            // use the vector like an array
+            // this fixes the issue where I could not read
+            // two doubles from the serial port in python
+            uint8_t* write_me = &tx_packet[0];
+            
+            this->serial_port.write(write_me, tx_packet.size());
         }
         ThisThread::sleep_for(11ms);
         return 0;

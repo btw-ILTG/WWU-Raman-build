@@ -74,10 +74,10 @@ vector<uint8_t> doubleToVector(double* double_convert) {
 // to clone the array into the vector
 vector<uint8_t> doubleToVector(double* double_convert, int size) {
     uint8_t* double_convert_pointer = (uint8_t *) double_convert; 
-    vector<uint8_t> vector_double;
-    for (int i = 0; i < size; i++) {
-        vector_double.push_back(*(double_convert_pointer + i));
-    }
+    vector<uint8_t> vector_double(double_convert, double_convert + size);
+    //for (int i = 0; i < size; i++) {
+    //    vector_double.push_back(*(double_convert_pointer + i));
+    //}
     return vector_double;
 }
 
