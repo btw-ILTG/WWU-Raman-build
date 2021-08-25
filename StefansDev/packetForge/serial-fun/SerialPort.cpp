@@ -1,4 +1,6 @@
 #include "mbed.h"
+#include <chrono>
+#include <ratio>
 #include <vector>
 #include "SerialPort.h"
 #include "CommandCodes.h"
@@ -31,8 +33,8 @@ int SerialPort::writeSerialPacket(vector<uint8_t> &tx_packet) {
         // two doubles from the serial port in python
         uint8_t* write_me = &tx_packet[0];
         this->serial_port.write(write_me, tx_packet.size());
-        
-        ThisThread::sleep_for(100ms);
+        this->serial_port.sync();
+        ThisThread::sleep_for(2ms);
         return 0;
     } else {
         // serial_port does not have space to write a character

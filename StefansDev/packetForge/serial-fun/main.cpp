@@ -123,7 +123,11 @@ int main() {
     vector<uint8_t> test2 = floatToVector(&number2);
     test.insert(std::end(test), std::begin(test2), std::end(test2));
 */  
-    double double_array[6] = {42.0, 69.0, 420.0, 343.0, 1125.0, 299792458.0};
+    #define ARR_TEST_SIZE 4
+    double double_array[ARR_TEST_SIZE];
+    for (int i = 0; i < ARR_TEST_SIZE; i++) {
+        double_array[i] = i;
+    }
     vector<uint8_t> test = doubleToVector(double_array, sizeof(double_array));
     
     //float float_array[2] = {42.0, 69.0};
