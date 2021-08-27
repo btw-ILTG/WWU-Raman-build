@@ -2,6 +2,7 @@
 #include <vector>
 
 #define TIMEOUT 2000ms
+#define BYTES_PER_SEND 4
 
 class SerialPort {
     private:

@@ -32,7 +32,17 @@ int SerialPort::writeSerialPacket(vector<uint8_t> &tx_packet) {
         // this fixes the issue where I could not read
         // two doubles from the serial port in python
         uint8_t* write_me = &tx_packet[0];
-        this->serial_port.write(write_me, tx_packet.size());
+        int chunks = 0;
+        for (int i = 0; i < tx_packet.size() / BYTES_PER_SEND; i++) {
+            this->serial_port.write((write_me + (i * BYTES_PER_SEND))
+                                        , BYTES_PER_SEND);
+            this->serial_port.sync();
+            ThisThread::sleep_for(2ms);
+            chunks++;
+        }
+        // print the final ones here
+        this->serial_port.write((write_me + (chunks * BYTES_PER_SEND)),
+                                     tx_packet.size() % BYTES_PER_SEND);
         this->serial_port.sync();
         ThisThread::sleep_for(2ms);
         return 0;

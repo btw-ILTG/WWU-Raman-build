@@ -3,17 +3,35 @@ By: Stefan Hess (Summer 2021)
 
 Commands will be issued as follows:
 
-|--------------|----.....----|------------|
-| packet_start |             | packet_end |
-|--------------|----.....----|------------|
+|--------------|-----------------|------------....----------|------------|
+| packet_start | packet_datatype | length based on datatype | packet_end |
+|--------------|-----------------|------------....----------|------------|
+				 (no datatype if
+				  	command)
+
+A series of packets will follow this:
+
+|--------------|---------------|-----------------|------------|
+| packet_start | packet_series | packet_datatype | packet_end |
+|--------------|---------------|-----------------|------------|
+
+ 	   |---------------|------------....----------|------------|
+ ----> | packet_series | length based on datatype | packet_end |
+	   |---------------|------------....----------|------------|
+
+ 	   |---------------|-----....-----|------------|
+ ----> | packet_series | packet_final | packet_end |
+	   |---------------|-----....-----|------------|
 
 Command codes used by the Raspberry Pi to give 
 instructions to the three nucleo stm32f401re boards.
 
 #define packet_start        0xF0
-#define packet_flag         0xF2 // likely not needed (I will OMIT)
+#define packet_ok			0xF1
+#define packet_series		0xF2
 #define packet_end          0xF3
-#define packet_ok			0xF4
+#define packet_final		0xF4 // for a series of packets
+
 #define packet_int			0xF6 // flags to indicate what kind
 #define packet_float		0xF7 // of data is being sent in the
 #define packet_double		0xF8 // packet
