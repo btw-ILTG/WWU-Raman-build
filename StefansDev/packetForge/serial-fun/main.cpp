@@ -63,56 +63,38 @@ void dispatchThread() {
 static DigitalOut led(LED1);
 
 vector<uint8_t> doubleToVector(double* double_convert) {
-    uint8_t* double_convert_pointer = (uint8_t *) *&double_convert; 
-    vector<uint8_t> vector_double;
-    for (int i = 0; i < sizeof(double); i++) {
-        vector_double.push_back(double_convert_pointer[i]);
-    }
+    uint8_t* double_convert_pointer = (uint8_t *) double_convert; 
+    vector<uint8_t> vector_double(double_convert_pointer, double_convert_pointer + sizeof(double));
     return vector_double;
 }
-// try using test.insert(std::end(test), std::begin(test2), std::end(test2));
-// to clone the array into the vector
+
 vector<uint8_t> doubleToVector(double* double_convert, int size) {
     uint8_t* double_convert_pointer = (uint8_t *) double_convert; 
     vector<uint8_t> vector_double(double_convert_pointer, double_convert_pointer + size);
-    //for (int i = 0; i < size; i++) {
-    //    vector_double.push_back(*(double_convert_pointer + i));
-    //}
     return vector_double;
 }
 
 vector<uint8_t> floatToVector(float* float_convert) {
-    uint8_t* float_convert_pointer = (uint8_t *) *&float_convert; 
-    vector<uint8_t> vector_float;
-    for (int i = 0; i < sizeof(float); i++) {
-        vector_float.push_back(float_convert_pointer[i]);
-    }
+    uint8_t* float_convert_pointer = (uint8_t *) float_convert; 
+    vector<uint8_t> vector_float(float_convert_pointer, float_convert_pointer + sizeof(float));
     return vector_float;
 }
 
 vector<uint8_t> floatToVector(float* float_convert, int size) {
     uint8_t* float_convert_pointer = (uint8_t *) float_convert; 
-    vector<uint8_t> vector_float;
-    for (int i = 0; i < size; i++) {
-        vector_float.push_back(*(float_convert_pointer + i));
-    }
+    vector<uint8_t> vector_float(float_convert_pointer, float_convert_pointer + size);
     return vector_float;
 }
 
 vector<uint8_t> intToVector(int* int_convert) {
-    uint8_t* int_convert_pointer = (uint8_t *) *&int_convert; 
-    vector<uint8_t> vector_int;
-    for (int i = 0; i < sizeof(int); i++) {
-        vector_int.push_back(int_convert_pointer[i]);
-    }
+    uint8_t* int_convert_pointer = (uint8_t *) int_convert; 
+    vector<uint8_t> vector_int(int_convert_pointer, int_convert_pointer + sizeof(int));
     return vector_int;
 }
+
 vector<uint8_t> intToVector(int* int_convert, int size) {
     uint8_t* int_convert_pointer = (uint8_t *) int_convert; 
-    vector<uint8_t> vector_int;
-    for (int i = 0; i < size; i++) {
-        vector_int.push_back(*(int_convert_pointer + i));
-    }
+    vector<uint8_t> vector_int(int_convert_pointer, int_convert_pointer + size);
     return vector_int;
 }
 
