@@ -143,8 +143,8 @@ int main() {
 
     test.push_back(0xF3);
 
-    vector<uint8_t> testing = {'Y', 'o', 0xf3};
-    raspi.writeSerialPacket(testing);
+    //vector<uint8_t> testing = {'Y', 'o', 0xf3};
+    //raspi.writeSerialPacket(testing);
     raspi.writeSerialPacket(test);
     
     //vector<uint8_t> test = { uint8_t(-11), 0xF3 };
