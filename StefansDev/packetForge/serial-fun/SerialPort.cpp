@@ -1,3 +1,4 @@
+#include "ThisThread.h"
 #include "mbed.h"
 #include <chrono>
 #include <ratio>
@@ -32,19 +33,23 @@ int SerialPort::writeSerialPacket(vector<uint8_t> &tx_packet) {
         // this fixes the issue where I could not read
         // two doubles from the serial port in python
         uint8_t* write_me = &tx_packet[0];
-        int chunks = 0;
-        for (int i = 0; i < tx_packet.size() / BYTES_PER_SEND; i++) {
-            this->serial_port.write((write_me + (i * BYTES_PER_SEND))
-                                        , BYTES_PER_SEND);
-            this->serial_port.sync();
-            ThisThread::sleep_for(2ms);
-            chunks++;
+
+        // for normal packets (+2 is to account for 
+        //                      packet_start and packet_end)
+        int total_packet_length = tx_packet.size() + 2;
+        uint8_t* packet_send = new uint8_t(total_packet_length);
+        packet_send[0] = packet_start;
+
+        // I used this wrong somehow....
+        //copy(write_me, (write_me + tx_packet.size()), packet_send[1]);
+        for (int i = 0; i < tx_packet.size(); i++) {
+            packet_send[i + 1] = *(write_me + i);
         }
-        // print the final ones here
-        this->serial_port.write((write_me + (chunks * BYTES_PER_SEND)),
-                                     tx_packet.size() % BYTES_PER_SEND);
+        packet_send[tx_packet.size() + 1] = packet_end;
+        this->serial_port.write(packet_send, total_packet_length);
         this->serial_port.sync();
-        ThisThread::sleep_for(2ms);
+        ThisThread::sleep_for(1ms);
+        
         return 0;
     } else {
         // serial_port does not have space to write a character

@@ -12,10 +12,16 @@
 // the ramanPi project
 
 #define packet_start        0xF0
-#define packet_flag         0xF2 // likely not needed
+#define packet_ok			0xF1
+#define packet_series		0xF2
 #define packet_end          0xF3
-#define packet_ok           0xF4
-#define packet_error        0xFF
+#define packet_final		0xF4 // for a series of packets
+
+#define packet_int			0xF6 // flags to indicate what kind
+#define packet_float		0xF7 // of data is being sent in the
+#define packet_double		0xF8 // packet
+
+#define packet_error		0xFF
 
 #define cmd_laser           0xA0
 #define laser_on       	    0xA1
