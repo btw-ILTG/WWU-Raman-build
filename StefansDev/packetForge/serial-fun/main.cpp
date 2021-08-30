@@ -129,6 +129,7 @@ int main() {
 
     int test_int = 500;
     vector<uint8_t> test_int_packet = intToVector(&test_int);
+    test_int_packet.insert(test_int_packet.begin(), packet_int);
     raspi.writeSerialPacket(test_int_packet);
 
 

@@ -48,7 +48,7 @@ int SerialPort::writeSerialPacket(vector<uint8_t> &tx_packet) {
         packet_send[tx_packet.size() + 1] = packet_end;
         this->serial_port.write(packet_send, total_packet_length);
         this->serial_port.sync();
-        ThisThread::sleep_for(1ms);
+        ThisThread::sleep_for(2ms);
         
         return 0;
     } else {
