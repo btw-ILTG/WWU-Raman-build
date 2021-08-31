@@ -228,6 +228,62 @@ def packet_processor(data):
 			print(data_double)
 			packet_data = struct.unpack('d', data_double)
 			print(packet_data)
+
+		elif data[1].to_bytes(1, "little") == packet_series:
+			if data[2].to_bytes(1, "little") == packet_int:
+				print("int series")
+				series_flag = 1
+				while series_flag == 1:
+					series_data = serial.read_until(b'\xf3')
+					print(series_data)
+					if series_data[0].to_bytes(1, "little") == packet_series:
+						if series_data[1].to_bytes(1, "little") == packet_final and series_data[2].to_bytes(1, "little") == packet_end:
+							series_flag = 0
+							print("Final packet")
+							break
+						else:
+							data_int = series_data[1:-1]
+							print(data_int)
+							packet_data = int.from_bytes(data_int, "little", signed=True)
+							print(packet_data)
+
+			elif data[2].to_bytes(1, "little") == packet_float:
+				print("float series")
+				series_flag = 1
+				while series_flag == 1:
+					series_data = serial.read_until(b'\xf3')
+					print(series_data)
+					if series_data[0].to_bytes(1, "little") == packet_series:
+						if series_data[1].to_bytes(1, "little") == packet_final and series_data[2].to_bytes(1, "little") == packet_end:
+							series_flag = 0
+							print("Final packet")
+							break
+						else:
+							data_float = series_data[1:-1]
+							print(data_float)
+							packet_data = struct.unpack('f', data_float)
+							print(packet_data)
+
+			elif data[2].to_bytes(1, "little") == packet_double:
+				print("double series")
+				series_flag = 1
+				while series_flag == 1:
+					series_data = serial.read_until(b'\xf3')
+					print(series_data)
+					if series_data[0].to_bytes(1, "little") == packet_series:
+						if series_data[1].to_bytes(1, "little") == packet_final and series_data[2].to_bytes(1, "little") == packet_end:
+							series_flag = 0
+							print("Final packet")
+							break
+						else:
+							data_double = series_data[1:-1]
+							print(data_double)
+							packet_data = struct.unpack('d', data_double)
+							print(packet_data)
+						
+					else:
+						print("No packet_series")
+			
 	else:
 		print("No packet_start")
 
