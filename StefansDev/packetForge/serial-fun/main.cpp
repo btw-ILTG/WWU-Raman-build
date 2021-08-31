@@ -132,6 +132,18 @@ int main() {
     test_int_packet.insert(test_int_packet.begin(), packet_int);
     raspi.writeSerialPacket(test_int_packet);
 
+    float test_float = 420.0;
+    vector<uint8_t> test_float_packet = floatToVector(&test_float);
+    test_float_packet.insert(test_float_packet.begin(), packet_float);
+    raspi.writeSerialPacket(test_float_packet);
+
+    double test_double = 42.0;
+    vector<uint8_t> test_double_packet = doubleToVector(&test_double);
+    test_double_packet.insert(test_double_packet.begin(), packet_double);
+    raspi.writeSerialPacket(test_double_packet);
+
+    //raspi.writeSerialPacket(test_int_packet);
+
 
     //float float_array[2] = {42.0, 69.0};
     //vector<uint8_t> test = floatToVector(float_array, sizeof(float_array));

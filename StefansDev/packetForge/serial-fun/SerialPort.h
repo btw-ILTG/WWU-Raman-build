@@ -13,6 +13,7 @@ class SerialPort {
     public:
         SerialPort(PinName tx, PinName rx, int baud);
         int writeSerialPacket(vector<uint8_t> &tx_packet);
+        int writeSerialSeries(vector<uint8_t> &tx_packet);
         int readSerialPacket(vector<uint8_t> &rx_packet);
         void timeout();
 };
