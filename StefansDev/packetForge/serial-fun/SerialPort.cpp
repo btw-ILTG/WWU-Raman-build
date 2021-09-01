@@ -47,24 +47,30 @@ int SerialPort::writeSerialPacket(vector<uint8_t> &tx_packet) {
     }
 }
 
-int SerialPort::writeSerialSeries(uint8_t* tx_packet, int size) {
+int SerialPort::writeSerialSeries(uint8_t* tx_packet, int length, 
+                    DataType packet_datatype) {
     if (this->serial_port.writable() == 1) {
         // use the vector like an array
         // this fixes the issue where I could not read
         // two doubles from the serial port in python
-        uint8_t* write_me = &tx_packet[0];
-        int data_length = 0;
-        if (write_me[0] == packet_int || write_me[0] == packet_float) {
-            data_length = 4; // 4 bytes per int or float
-        } else if (write_me[0] == packet_double) {
-            data_length = 8;
-        }
+        int data_length = packet_datatype;
+
+        
         uint8_t series_begin[4] = {packet_start, packet_series, 
                                                 0x00, packet_end};
-        series_begin[2] = write_me[0];
+        if (packet_datatype == int_packet) {
+            series_begin[2] = packet_int;
+        }
+        if (packet_datatype == float_packet) {
+            series_begin[2] = packet_float;
+        }
+        if (packet_datatype == double_packet) {
+            series_begin[2] = packet_double;
+        }
 
         uint8_t series_end[3] = {packet_series, packet_final, packet_end};
 
+        this->serial_port.sync();
         this->serial_port.write(series_begin, sizeof(series_begin));
         this->serial_port.sync();
 
@@ -72,9 +78,9 @@ int SerialPort::writeSerialSeries(uint8_t* tx_packet, int size) {
         series_packet[0] = packet_series;
         series_packet[data_length + 1] = packet_end;
         // -1 because we exclude the datatype
-        for (int i = 0; i < (tx_packet.size() - 1) / data_length; i++) {
+        for (int i = 0; i < length / data_length; i++) {
             for (int j = 0; j < data_length; j++) {
-                series_packet[j + 1] = *(write_me + 1 + (i * data_length) + j);
+                series_packet[j + 1] = *(tx_packet + (i * data_length) + j);
             }
             this->serial_port.write(series_packet, data_length + 2);
             this->serial_port.sync();
