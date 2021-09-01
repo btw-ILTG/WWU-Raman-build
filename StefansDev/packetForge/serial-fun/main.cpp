@@ -113,20 +113,20 @@ int main() {
     vector<uint8_t> test2 = floatToVector(&number2);
     test.insert(std::end(test), std::begin(test2), std::end(test2));
 */  
-/*
-    #define ARR_TEST_SIZE 3000
+
+    #define ARR_TEST_SIZE 350
     double double_array[ARR_TEST_SIZE];
     for (int i = 0; i < ARR_TEST_SIZE; i++) {
         double_array[i] = i;
     }
     vector<uint8_t> test = doubleToVector(double_array, sizeof(double_array));
-    test.push_back(0xF3);
-    raspi.writeSerialPacket(test);
-*/
+    test.insert(test.begin(), packet_double);
+    raspi.writeSerialSeries(test);
+
 
     //vector<uint8_t> single_packet = { cmd_laser, laser_on};
     //raspi.writeSerialPacket(single_packet);
-
+/*
     int test_int = 500;
     vector<uint8_t> test_int_packet = intToVector(&test_int);
     test_int_packet.insert(test_int_packet.begin(), packet_int);
@@ -142,8 +142,11 @@ int main() {
     test_double_packet.insert(test_double_packet.begin(), packet_double);
     raspi.writeSerialPacket(test_double_packet);
 
-    //raspi.writeSerialPacket(test_int_packet);
-
+    double test_double_array[] = {500, 420, 42, 1337};
+    vector<uint8_t> test_series_double = doubleToVector(test_double_array, sizeof(test_double_array));
+    test_series_double.insert(test_series_double.begin(), packet_double);
+    raspi.writeSerialSeries(test_series_double);
+*/
 
     //float float_array[2] = {42.0, 69.0};
     //vector<uint8_t> test = floatToVector(float_array, sizeof(float_array));

@@ -63,20 +63,20 @@ int SerialPort::writeSerialSeries(vector<uint8_t> &tx_packet) {
                                                 0x00, packet_end};
         series_begin[2] = write_me[0];
 
-        uint8_t series_end[3] = {packet_start, packet_final, packet_end};
+        uint8_t series_end[3] = {packet_series, packet_final, packet_end};
 
         this->serial_port.write(series_begin, sizeof(series_begin));
         this->serial_port.sync();
 
         uint8_t* series_packet = new uint8_t[data_length + 2];
         series_packet[0] = packet_series;
-        series_packet[data_length - 1] = packet_end;
+        series_packet[data_length + 1] = packet_end;
         // -1 because we exclude the datatype
         for (int i = 0; i < (tx_packet.size() - 1) / data_length; i++) {
             for (int j = 0; j < data_length; j++) {
                 series_packet[j + 1] = *(write_me + 1 + (i * data_length) + j);
             }
-            this->serial_port.write(series_packet, sizeof(series_packet));
+            this->serial_port.write(series_packet, data_length + 2);
             this->serial_port.sync();
         }
         delete [] series_packet;
