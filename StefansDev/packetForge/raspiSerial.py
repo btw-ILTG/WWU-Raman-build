@@ -168,7 +168,7 @@ def ccdCool():
     print(serial.readline())
     
 
-serial = serial.Serial("/dev/ttyAMA0", baudrate=9600, write_timeout=3.0, stopbits=1)
+serial = serial.Serial("/dev/ttyAMA0", baudrate=921600, write_timeout=3.0, stopbits=1)
 
 #call functions below-
 
@@ -234,7 +234,7 @@ def packet_processor(data):
 				print("int series")
 				series_flag = 1
 				while series_flag == 1:
-					series_data = serial.read_until(b'\xf3')
+					series_data = serial.read(6)
 					print(series_data)
 					if series_data[0].to_bytes(1, "little") == packet_series:
 						if series_data[1].to_bytes(1, "little") == packet_final and series_data[2].to_bytes(1, "little") == packet_end:
@@ -251,7 +251,7 @@ def packet_processor(data):
 				print("float series")
 				series_flag = 1
 				while series_flag == 1:
-					series_data = serial.read_until(b'\xf3')
+					series_data = serial.read(6)
 					print(series_data)
 					if series_data[0].to_bytes(1, "little") == packet_series:
 						if series_data[1].to_bytes(1, "little") == packet_final and series_data[2].to_bytes(1, "little") == packet_end:
@@ -268,7 +268,7 @@ def packet_processor(data):
 				print("double series")
 				series_flag = 1
 				while series_flag == 1:
-					series_data = serial.read_until(b'\xf3')
+					series_data = serial.read(10)
 					print(series_data)
 					if series_data[0].to_bytes(1, "little") == packet_series:
 						if series_data[1].to_bytes(1, "little") == packet_final and series_data[2].to_bytes(1, "little") == packet_end:
