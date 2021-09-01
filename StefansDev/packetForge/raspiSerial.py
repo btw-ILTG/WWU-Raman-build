@@ -4,10 +4,19 @@
 import time
 import serial
 import numpy as np
+import struct
 
 packet_start = b'\xf0'
-packet_flag = b'\xf2'
+packet_ok = b'\xf1'
+packet_series = b'\xf2'
 packet_end = b'\xf3'
+packet_final = b'\xf4'
+
+packet_int = b'\xf6'
+packet_float = b'\xf7'
+packet_double = b'\xf8'
+
+packet_error = b'\xff'
 
 cmd_laser = b'\xa0'
 laser_on = b'\xa1'
@@ -190,7 +199,97 @@ serial = serial.Serial("/dev/ttyAMA0", baudrate=9600, write_timeout=3.0, stopbit
 #bytes_written = serial.write(msg_byte)
 #print("Bytes written: ", bytes_written)
 #msg_test = "Hi"
-packet = packet_start + packet_flag + cmd_laser + packet_end
-serial.write(packet)
+#packet = packet_start + packet_flag + cmd_laser + packet_end
+#serial.write(packet)
+#data = data[:-1]	
+#size = 300
+#struct_string = ''
+#for i in range(0,size):
+#		struct_string = struct_string + 'd'	
+
+#print(struct.unpack(struct_string, data))
+
+def packet_processor(data):
+	if data[0].to_bytes(1, "little") == packet_start:
+		if data[1].to_bytes(1, "little") == packet_int:
+			data_int = data[2:-1]
+			print(data_int)
+			packet_data = int.from_bytes(data_int, "little", signed=True)
+			print(packet_data)
+
+		elif data[1].to_bytes(1, "little") == packet_float:
+			data_float = data[2:-1]
+			print(data_float)
+			packet_data = struct.unpack('f', data_float)
+			print(packet_data)
+
+		elif data[1].to_bytes(1, "little") == packet_double:
+			data_double = data[2:-1]
+			print(data_double)
+			packet_data = struct.unpack('d', data_double)
+			print(packet_data)
+
+		elif data[1].to_bytes(1, "little") == packet_series:
+			if data[2].to_bytes(1, "little") == packet_int:
+				print("int series")
+				series_flag = 1
+				while series_flag == 1:
+					series_data = serial.read_until(b'\xf3')
+					print(series_data)
+					if series_data[0].to_bytes(1, "little") == packet_series:
+						if series_data[1].to_bytes(1, "little") == packet_final and series_data[2].to_bytes(1, "little") == packet_end:
+							series_flag = 0
+							print("Final packet")
+							break
+						else:
+							data_int = series_data[1:-1]
+							print(data_int)
+							packet_data = int.from_bytes(data_int, "little", signed=True)
+							print(packet_data)
+
+			elif data[2].to_bytes(1, "little") == packet_float:
+				print("float series")
+				series_flag = 1
+				while series_flag == 1:
+					series_data = serial.read_until(b'\xf3')
+					print(series_data)
+					if series_data[0].to_bytes(1, "little") == packet_series:
+						if series_data[1].to_bytes(1, "little") == packet_final and series_data[2].to_bytes(1, "little") == packet_end:
+							series_flag = 0
+							print("Final packet")
+							break
+						else:
+							data_float = series_data[1:-1]
+							print(data_float)
+							packet_data = struct.unpack('f', data_float)
+							print(packet_data)
+
+			elif data[2].to_bytes(1, "little") == packet_double:
+				print("double series")
+				series_flag = 1
+				while series_flag == 1:
+					series_data = serial.read_until(b'\xf3')
+					print(series_data)
+					if series_data[0].to_bytes(1, "little") == packet_series:
+						if series_data[1].to_bytes(1, "little") == packet_final and series_data[2].to_bytes(1, "little") == packet_end:
+							series_flag = 0
+							print("Final packet")
+							break
+						else:
+							data_double = series_data[1:-1]
+							print(data_double)
+							packet_data = struct.unpack('d', data_double)
+							print(packet_data)
+						
+					else:
+						print("No packet_series")
+			
+	else:
+		print("No packet_start")
+
 while True:
-	print(serial.readline())
+	data_read = serial.read_until(b'\xf3')	
+	#data_read = serial.read()
+	print(data_read)
+	packet_processor(data_read)
+	print("Looped")
