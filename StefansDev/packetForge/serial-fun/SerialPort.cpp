@@ -47,7 +47,7 @@ int SerialPort::writeSerialPacket(vector<uint8_t> &tx_packet) {
     }
 }
 
-int SerialPort::writeSerialSeries(vector<uint8_t> &tx_packet) {
+int SerialPort::writeSerialSeries(uint8_t* tx_packet, int size) {
     if (this->serial_port.writable() == 1) {
         // use the vector like an array
         // this fixes the issue where I could not read
