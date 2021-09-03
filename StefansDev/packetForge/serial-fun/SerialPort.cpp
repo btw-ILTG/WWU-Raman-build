@@ -113,12 +113,28 @@ int SerialPort::writeSerialSeries(uint8_t* tx_packet, int length, uint8_t packet
     }
 }
 
+// This is to write a packet with pre defined length,
+// mostly for command communications. MUST PROVIDE start and end
+int SerialPort::writeSerialRaw(uint8_t* tx_packet, int length) {
+    if (this->serial_port.writable() == 1) {
+        
+        this->serial_port.write(tx_packet, length);
+        this->serial_port.sync();
+        ThisThread::sleep_for(2ms);
+        
+        return 0;
+    } else {
+        // serial_port does not have space to write a character
+        return -1;
+    }
+}
+
 int SerialPort::readSerialPacket(vector<uint8_t> &rx_packet) {
     if (this->serial_port.readable() == 1) {
         
         bool packet_started = false;
         uint8_t read[this->MAX_BUFFER_SIZE];
-
+        this->serial_port.sync();
         Timeout read_timeout;
         this->timedout = false;
         read_timeout.attach(callback(this, &SerialPort::timeout), TIMEOUT);

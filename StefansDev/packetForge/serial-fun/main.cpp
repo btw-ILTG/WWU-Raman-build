@@ -135,7 +135,7 @@ int main() {
 */
     //vector<uint8_t> single_packet = { cmd_laser, laser_on};
     //raspi.writeSerialPacket(single_packet);
-
+/*
     int test_int = 500;
     raspi.writeSerialPacket((uint8_t*) &test_int, packet_int);
 
@@ -147,7 +147,7 @@ int main() {
 
     double test_double_array[] = {500, 420, 42, 1337};
     raspi.writeSerialSeries((uint8_t*) test_double_array, sizeof(double) * 4, packet_double);
-
+*/
 
     //float float_array[2] = {42.0, 69.0};
     //vector<uint8_t> test = floatToVector(float_array, sizeof(float_array));
@@ -161,15 +161,23 @@ int main() {
     //vector<uint8_t> test = { uint8_t(-11), 0xF3 };
     //vector<uint8_t> test1 = {'Y', 'o', '\n'};
 
-    //vector<uint8_t> test_read;
+    vector<uint8_t> test_read;
     //volatile int status;
     //status = raspi.readSerialPacket(test_read);    
     
-    //while (raspi.readSerialPacket(test_read) == -1) {
-        //ThisThread::sleep_for(11ms);
-    //}
+    while (raspi.readSerialPacket(test_read) != 0) {
+        ThisThread::sleep_for(11ms);
+    }
+    
+    //double test_double = 42.0;
+    //raspi.writeSerialPacket((uint8_t*) &test_double, packet_double);
 
-    //raspi.writeSerialPacket(test);
+    uint8_t* echo_back = new uint8_t[test_read.size()];
+    for (int i = 0; i < test_read.size(); i++) {
+        echo_back[i] = test_read.at(i);
+    }
+
+    raspi.writeSerialRaw(echo_back, test_read.size());
     //raspi.writeSerialPacket(test_read);
 
     return 0;

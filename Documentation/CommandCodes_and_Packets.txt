@@ -19,9 +19,17 @@ A series of packets will follow this:
  ----> | packet_series | length based on datatype | packet_end |
 	   |---------------|------------....----------|------------|
 
- 	   |---------------|-----....-----|------------|
+ 	   |---------------|--------------|------------|
  ----> | packet_series | packet_final | packet_end |
-	   |---------------|-----....-----|------------|
+	   |---------------|--------------|------------|
+
+Command packets will have a length of four:
+
+example:
+
+|--------------|-----------|----------|------------|
+| packet_start | cmd_laser | laser_on | packet_end |
+|--------------|-----------|----------|------------|
 
 Command codes used by the Raspberry Pi to give 
 instructions to the three nucleo stm32f401re boards.
@@ -35,6 +43,7 @@ instructions to the three nucleo stm32f401re boards.
 #define packet_int			0xF6 // flags to indicate what kind
 #define packet_float		0xF7 // of data is being sent in the
 #define packet_double		0xF8 // packet
+
 #define packet_error		0xFF
 
 #define cmd_laser           0xA0
