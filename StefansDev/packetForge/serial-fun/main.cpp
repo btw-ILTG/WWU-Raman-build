@@ -1,5 +1,6 @@
 #include "BufferedSerial.h"
 #include "PinNames.h"
+#include "UnbufferedSerial.h"
 #include "mbed.h"
 #include "SerialPort.h"
 #include "CommandCodes.h"
@@ -60,7 +61,7 @@ void dispatchThread() {
 }
 */
 
-static DigitalOut led(LED1);
+//static DigitalOut led(LED1);
 
 vector<uint8_t> doubleToVector(double* double_convert) {
     uint8_t* double_convert_pointer = (uint8_t *) double_convert; 
@@ -106,6 +107,7 @@ int main() {
     //serialWrite.start(callback(writeThread));
 
     SerialPort raspi(D8, D2, 921600);
+    //UnbufferedSerial unbufRaspi(D8, D2, 921600);
 /*
     float number1 = -42.0;
     float number2 = -512.0;
@@ -161,23 +163,30 @@ int main() {
     //vector<uint8_t> test = { uint8_t(-11), 0xF3 };
     //vector<uint8_t> test1 = {'Y', 'o', '\n'};
 
-    vector<uint8_t> test_read;
-    //volatile int status;
-    //status = raspi.readSerialPacket(test_read);    
-    
-    while (raspi.readSerialPacket(test_read) != 0) {
-        ThisThread::sleep_for(11ms);
-    }
+        
+ 
+    uint8_t* test_read = nullptr;
+    uint8_t data_return;
+    int length = raspi.readSerialPacket(&test_read, data_return);
+    //if (test_read[0] == cmd_laser) {
+        //led = 1;
+    //}
+    //while (raspi.readSerialPacket(test_read) != 0) {
+    //    ThisThread::sleep_for(2ms);
+    //}
     
     //double test_double = 42.0;
     //raspi.writeSerialPacket((uint8_t*) &test_double, packet_double);
 
-    uint8_t* echo_back = new uint8_t[test_read.size()];
-    for (int i = 0; i < test_read.size(); i++) {
-        echo_back[i] = test_read.at(i);
-    }
+    //uint8_t* echo_back = new uint8_t[32];
+    //for (int i = 0; i < 32; i++) {
+    //    echo_back[i] = test_read[i];
+    //}
 
-    raspi.writeSerialRaw(echo_back, test_read.size());
+    if (length != -1) {
+        //raspi.writeSerialRawRaw(test_read, length);
+        raspi.writeSerialPacket(test_read, data_return);
+    }
     //raspi.writeSerialPacket(test_read);
 
     return 0;

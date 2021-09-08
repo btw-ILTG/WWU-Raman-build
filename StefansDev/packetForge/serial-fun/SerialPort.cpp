@@ -114,12 +114,16 @@ int SerialPort::writeSerialSeries(uint8_t* tx_packet, int length, uint8_t packet
 }
 
 // This is to write a packet with pre defined length,
-// mostly for command communications. MUST PROVIDE start and end
+// mostly for command communications. DO NOT PROVIDE start and end
 int SerialPort::writeSerialRaw(uint8_t* tx_packet, int length) {
     if (this->serial_port.writable() == 1) {
-        
-        this->serial_port.write(tx_packet, length);
+        uint8_t* write_me = new uint8_t[length + 2];
+        write_me[0] = packet_start;
+        write_me[length + 1] = packet_end;
+        memcpy(write_me + 1, tx_packet, length);
+        this->serial_port.write(write_me, length + 2);
         this->serial_port.sync();
+        delete [] write_me;
         ThisThread::sleep_for(2ms);
         
         return 0;
@@ -128,8 +132,85 @@ int SerialPort::writeSerialRaw(uint8_t* tx_packet, int length) {
         return -1;
     }
 }
+int SerialPort::writeSerialRawRaw(uint8_t* tx_packet, int length) {
+    if (this->serial_port.writable() == 1) {
+        this->serial_port.write(tx_packet, length);
+        ThisThread::sleep_for(2ms);
+        
+        return 0;
+    } else {
+        // serial_port does not have space to write a character
+        return -1;
+    }
+}
+static DigitalOut led(LED1);
+int SerialPort::readSerialPacket(uint8_t** rx_packet, uint8_t &data_type) {
+    uint8_t* rx_start = new uint8_t[2]{0};
+    this->serial_port.read(rx_start, 2);
+    // So it works with all boards
+    if (rx_start[0] == packet_start && (rx_start[1] == cmd_laser 
+                                            || rx_start[1] == cmd_cuvette
+                                            || rx_start[1] == cmd_filter
+                                            || rx_start[1] == cmd_ccd_pelt)) {
+        uint8_t* rx_data = new uint8_t[2]{0};
+        this->serial_port.read(rx_data, 2);
+        if (rx_data[1] != packet_end) {
+            // Return error
+            return -1;
+        }
+        *rx_packet = new uint8_t[2]{0};
+        **rx_packet = rx_start[1];
+        *(*rx_packet+1) = rx_data[0];
+        
+        delete [] rx_data;
+        delete [] rx_start;
+        data_type = packet_start;
+        return 2;
 
-int SerialPort::readSerialPacket(vector<uint8_t> &rx_packet) {
+    } else if (rx_start[0] == packet_start && rx_start[1] == packet_int) {
+        uint8_t* rx_data = new uint8_t[5]{0};
+        this->serial_port.read(rx_data, 5);
+        if (rx_data[4] != packet_end) {
+            // Return error
+            return -1;
+        }
+        *rx_packet = new uint8_t[4]{0};
+        memcpy(*rx_packet, rx_data, 4);
+        delete [] rx_data;
+        data_type = packet_int;
+        return 4;
+
+    } else if (rx_start[0] == packet_start && rx_start[1] == packet_float) {
+        uint8_t* rx_data = new uint8_t[5]{0};
+        this->serial_port.read(rx_data, 5);
+        if (rx_data[4] != packet_end) {
+            // Return error
+            return -1;
+        }
+        
+        *rx_packet = new uint8_t[4]{0};
+        memcpy(*rx_packet, rx_data, 4);
+        delete [] rx_data;
+        data_type = packet_float;
+        return 4;
+
+    } else if (rx_start[0] == packet_start && rx_start[1] == packet_double) {
+        uint8_t* rx_data = new uint8_t[9]{0};
+        this->serial_port.read(rx_data, 9);
+        if (rx_data[8] != packet_end) {
+            // Return error
+            return -1;
+        }
+        *rx_packet = new uint8_t[8]{0};
+        memcpy(*rx_packet, rx_data, 8);
+        delete [] rx_data;
+        data_type = packet_double;
+        return 8;
+
+    } else if (rx_start[0] == packet_start && rx_start[1] == packet_series) {
+        return -3; //NOT IMPLEMENTED
+    }
+    return 0;
     
 }
 
