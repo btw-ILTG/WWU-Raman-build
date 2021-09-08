@@ -1,5 +1,6 @@
 #include "BufferedSerial.h"
 #include "PinNames.h"
+#include "UnbufferedSerial.h"
 #include "mbed.h"
 #include "SerialPort.h"
 #include "CommandCodes.h"
@@ -60,7 +61,7 @@ void dispatchThread() {
 }
 */
 
-static DigitalOut led(LED1);
+//static DigitalOut led(LED1);
 
 vector<uint8_t> doubleToVector(double* double_convert) {
     uint8_t* double_convert_pointer = (uint8_t *) double_convert; 
@@ -105,7 +106,8 @@ int main() {
     //serialRead.start(callback(readThread));
     //serialWrite.start(callback(writeThread));
 
-    SerialPort raspi(D8, D2, 9600);
+    SerialPort raspi(D8, D2, 921600);
+    //UnbufferedSerial unbufRaspi(D8, D2, 921600);
 /*
     float number1 = -42.0;
     float number2 = -512.0;
@@ -114,7 +116,7 @@ int main() {
     test.insert(std::end(test), std::begin(test2), std::end(test2));
 */  
 /*
-    #define ARR_TEST_SIZE 4339
+    #define ARR_TEST_SIZE 10000
     double* double_array = new double[ARR_TEST_SIZE];
     for (int i = 0; i < ARR_TEST_SIZE; i++) {
         double_array[i] = i;
@@ -123,7 +125,8 @@ int main() {
     raspi.writeSerialSeries((uint8_t*) double_array, sizeof(double) * ARR_TEST_SIZE, double_packet);
     delete [] double_array;
 */
-    #define ARR_TEST_SIZE 8678
+/*
+    #define ARR_TEST_SIZE 22000
     float* float_array = new float[ARR_TEST_SIZE];
     for (int i = 0; i < ARR_TEST_SIZE; i++) {
         float_array[i] = i;
@@ -131,29 +134,21 @@ int main() {
 
     raspi.writeSerialSeries((uint8_t*) float_array, sizeof(float) * ARR_TEST_SIZE, float_packet);
     delete [] float_array;
-
+*/
     //vector<uint8_t> single_packet = { cmd_laser, laser_on};
     //raspi.writeSerialPacket(single_packet);
 /*
     int test_int = 500;
-    vector<uint8_t> test_int_packet = intToVector(&test_int);
-    test_int_packet.insert(test_int_packet.begin(), packet_int);
-    raspi.writeSerialPacket(test_int_packet);
+    raspi.writeSerialPacket((uint8_t*) &test_int, packet_int);
 
     float test_float = 420.0;
-    vector<uint8_t> test_float_packet = floatToVector(&test_float);
-    test_float_packet.insert(test_float_packet.begin(), packet_float);
-    raspi.writeSerialPacket(test_float_packet);
+    raspi.writeSerialPacket((uint8_t*) &test_float, packet_float);
 
     double test_double = 42.0;
-    vector<uint8_t> test_double_packet = doubleToVector(&test_double);
-    test_double_packet.insert(test_double_packet.begin(), packet_double);
-    raspi.writeSerialPacket(test_double_packet);
+    raspi.writeSerialPacket((uint8_t*) &test_double, packet_double);
 
     double test_double_array[] = {500, 420, 42, 1337};
-    vector<uint8_t> test_series_double = doubleToVector(test_double_array, sizeof(test_double_array));
-    test_series_double.insert(test_series_double.begin(), packet_double);
-    raspi.writeSerialSeries(test_series_double);
+    raspi.writeSerialSeries((uint8_t*) test_double_array, sizeof(double) * 4, packet_double);
 */
 
     //float float_array[2] = {42.0, 69.0};
@@ -168,15 +163,30 @@ int main() {
     //vector<uint8_t> test = { uint8_t(-11), 0xF3 };
     //vector<uint8_t> test1 = {'Y', 'o', '\n'};
 
-    //vector<uint8_t> test_read;
-    //volatile int status;
-    //status = raspi.readSerialPacket(test_read);    
+        
+ 
+    uint8_t* test_read = nullptr;
+    uint8_t data_return;
+    int length = raspi.readSerialPacket(&test_read, data_return);
+    //if (test_read[0] == cmd_laser) {
+        //led = 1;
+    //}
+    //while (raspi.readSerialPacket(test_read) != 0) {
+    //    ThisThread::sleep_for(2ms);
+    //}
     
-    //while (raspi.readSerialPacket(test_read) == -1) {
-        //ThisThread::sleep_for(11ms);
+    //double test_double = 42.0;
+    //raspi.writeSerialPacket((uint8_t*) &test_double, packet_double);
+
+    //uint8_t* echo_back = new uint8_t[32];
+    //for (int i = 0; i < 32; i++) {
+    //    echo_back[i] = test_read[i];
     //}
 
-    //raspi.writeSerialPacket(test);
+    if (length != -1) {
+        //raspi.writeSerialRawRaw(test_read, length);
+        raspi.writeSerialPacket(test_read, data_return);
+    }
     //raspi.writeSerialPacket(test_read);
 
     return 0;
