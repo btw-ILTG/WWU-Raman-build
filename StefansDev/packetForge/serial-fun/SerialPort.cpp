@@ -143,75 +143,67 @@ int SerialPort::writeSerialRawRaw(uint8_t* tx_packet, int length) {
         return -1;
     }
 }
-static DigitalOut led(LED1);
+
 int SerialPort::readSerialPacket(uint8_t** rx_packet, uint8_t &data_type) {
     uint8_t* rx_start = new uint8_t[2]{0};
     this->serial_port.read(rx_start, 2);
-    // So it works with all boards
-    if (rx_start[0] == packet_start && (rx_start[1] == cmd_laser 
-                                            || rx_start[1] == cmd_cuvette
-                                            || rx_start[1] == cmd_filter
-                                            || rx_start[1] == cmd_ccd_pelt)) {
-        uint8_t* rx_data = new uint8_t[2]{0};
-        this->serial_port.read(rx_data, 2);
-        if (rx_data[1] != packet_end) {
-            // Return error
-            return -1;
-        }
-        *rx_packet = new uint8_t[2]{0};
-        **rx_packet = rx_start[1];
-        *(*rx_packet+1) = rx_data[0];
-        
-        delete [] rx_data;
-        delete [] rx_start;
-        data_type = packet_start;
-        return 2;
-
-    } else if (rx_start[0] == packet_start && rx_start[1] == packet_int) {
-        uint8_t* rx_data = new uint8_t[5]{0};
-        this->serial_port.read(rx_data, 5);
-        if (rx_data[4] != packet_end) {
-            // Return error
-            return -1;
-        }
-        *rx_packet = new uint8_t[4]{0};
-        memcpy(*rx_packet, rx_data, 4);
-        delete [] rx_data;
-        data_type = packet_int;
-        return 4;
-
-    } else if (rx_start[0] == packet_start && rx_start[1] == packet_float) {
-        uint8_t* rx_data = new uint8_t[5]{0};
-        this->serial_port.read(rx_data, 5);
-        if (rx_data[4] != packet_end) {
-            // Return error
-            return -1;
-        }
-        
-        *rx_packet = new uint8_t[4]{0};
-        memcpy(*rx_packet, rx_data, 4);
-        delete [] rx_data;
-        data_type = packet_float;
-        return 4;
-
-    } else if (rx_start[0] == packet_start && rx_start[1] == packet_double) {
-        uint8_t* rx_data = new uint8_t[9]{0};
-        this->serial_port.read(rx_data, 9);
-        if (rx_data[8] != packet_end) {
-            // Return error
-            return -1;
-        }
-        *rx_packet = new uint8_t[8]{0};
-        memcpy(*rx_packet, rx_data, 8);
-        delete [] rx_data;
-        data_type = packet_double;
-        return 8;
-
-    } else if (rx_start[0] == packet_start && rx_start[1] == packet_series) {
-        return -3; //NOT IMPLEMENTED
+    if (rx_start[0] != packet_start) {
+        return -1;
     }
-    return 0;
-    
+
+    int datalength = 0;
+
+    switch (rx_start[1]) {
+        case packet_int:
+            datalength = 4;
+            break;
+        case packet_float:
+            datalength = 4;
+            break;
+        case packet_double:
+            datalength = 8;
+            break;
+        case cmd_laser:
+            datalength = 1;
+            break;
+        case cmd_cuvette:
+            datalength = 1;
+            break;
+        case cmd_filter:
+            datalength = 1;
+            break;
+        case cmd_ccd_pelt:
+            datalength = 1;
+            break;
+    }
+
+    if (rx_start[1] == packet_series) {
+        uint8_t* packet_info = new uint8_t[2]{0};
+        this->serial_port.read(packet_info, 2);
+        if (packet_info[1] != packet_end) {
+            return -1;
+        }
+        if (packet_info[0] == packet_int) {
+
+        } else if (packet_info[0] == packet_float) {
+
+        } else if (packet_info[0] == packet_double) {
+
+        }
+    } else {
+        uint8_t* rx_data = new uint8_t[datalength + 1]{0};
+        this->serial_port.read(rx_data, datalength + 1);
+        if (rx_data[datalength] != packet_end) {
+            // Return error
+            return -1;
+        }
+        *rx_packet = new uint8_t[datalength]{0};
+        memcpy(*rx_packet, rx_data, datalength);
+        delete [] rx_data;
+        data_type = rx_start[1];
+        delete [] rx_start;
+        return datalength;
+    }
 }
 
 void SerialPort::timeout() {
