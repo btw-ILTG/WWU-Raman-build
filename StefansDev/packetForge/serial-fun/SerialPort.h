@@ -2,11 +2,13 @@
 #include <vector>
 
 #define TIMEOUT 2000ms
+#define MAX_PAGES_4 64 // depends on the size of data
+#define MAX_PAGES_8 32 // 4 = 4 bytes, 8 = 8 bytes
+#define PAGE_LENGTH 256
 
 class SerialPort {
     private:
         BufferedSerial serial_port;
-        uint8_t MAX_BUFFER_SIZE = 10;
         volatile bool timedout = false;
 
     public:

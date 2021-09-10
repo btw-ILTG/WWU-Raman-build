@@ -185,8 +185,12 @@ int main() {
 
     if (length != -1) {
         //raspi.writeSerialRawRaw(test_read, length);
-        raspi.writeSerialPacket(test_read, data_return);
+        //raspi.writeSerialPacket(test_read, data_return);
+        raspi.writeSerialPacket((uint8_t *) &length, packet_int);
     }
+
+    delete [] test_read;
+    test_read = nullptr;
     //raspi.writeSerialPacket(test_read);
 
     return 0;

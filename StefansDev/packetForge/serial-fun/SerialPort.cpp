@@ -145,13 +145,15 @@ int SerialPort::writeSerialRawRaw(uint8_t* tx_packet, int length) {
 }
 
 int SerialPort::readSerialPacket(uint8_t** rx_packet, uint8_t &data_type) {
-    uint8_t* rx_start = new uint8_t[2]{0};
+    uint8_t* rx_start = new uint8_t[2];
     this->serial_port.read(rx_start, 2);
     if (rx_start[0] != packet_start) {
         return -1;
     }
 
     int datalength = 0;
+
+    data_type = rx_start[1];
 
     switch (rx_start[1]) {
         case packet_int:
@@ -178,20 +180,93 @@ int SerialPort::readSerialPacket(uint8_t** rx_packet, uint8_t &data_type) {
     }
 
     if (rx_start[1] == packet_series) {
-        uint8_t* packet_info = new uint8_t[2]{0};
+        uint8_t* packet_info = new uint8_t[2];
         this->serial_port.read(packet_info, 2);
         if (packet_info[1] != packet_end) {
             return -1;
         }
-        if (packet_info[0] == packet_int) {
 
-        } else if (packet_info[0] == packet_float) {
+        data_type = packet_info[0];
 
-        } else if (packet_info[0] == packet_double) {
+        int datalength = 0;
+        uint8_t** pages = nullptr;
 
+        switch (packet_info[0]) {
+            case packet_int:
+                datalength = 4;
+                pages = new uint8_t*[MAX_PAGES_4];
+                break;
+
+            case packet_float:
+                datalength = 4;
+                pages = new uint8_t*[MAX_PAGES_4];
+                break;
+
+            case packet_double:
+                datalength = 8;
+                pages = new uint8_t*[MAX_PAGES_8];
+                break;
         }
+
+        if (datalength == 4) {
+            uint8_t* read_buffer = new uint8_t[datalength+2];
+            for (int i = 0; i < MAX_PAGES_4; i++) {
+                pages[i] = new uint8_t[PAGE_LENGTH * datalength];
+                for (int j = 0; j < PAGE_LENGTH; j++) {
+                    read_buffer[datalength+1] = 0;
+                    this->serial_port.read(read_buffer, datalength + 2);
+                    if (read_buffer[0] == packet_series && 
+                        read_buffer[1] == packet_final && 
+                        read_buffer[2] == packet_end && 
+                        read_buffer[datalength+1] == 0) {
+
+                        rx_packet = pages;
+                        pages = nullptr;
+                        delete [] read_buffer;
+                        read_buffer = nullptr;
+
+                        return i * PAGE_LENGTH + j*datalength;
+
+                    }
+                    if (read_buffer[0] != packet_series && read_buffer[datalength+1] != packet_end) {
+                        return -1;
+                    }
+                    memcpy(*(pages+i) +(j*datalength), read_buffer+1, datalength);
+                }
+            }
+            
+        
+        } else if (datalength == 8) {
+            uint8_t* read_buffer = new uint8_t[datalength+2];
+            for (int i = 0; i < MAX_PAGES_4; i++) {
+                pages[i] = new uint8_t[PAGE_LENGTH * datalength];
+                for (int j = 0; j < PAGE_LENGTH; j++) {
+                    read_buffer[datalength+1] = 0;
+                    this->serial_port.read(read_buffer, datalength + 2);
+                    if (read_buffer[0] == packet_series && 
+                        read_buffer[1] == packet_final && 
+                        read_buffer[2] == packet_end &&
+                        read_buffer[datalength+1] == 0) {
+
+                        rx_packet = pages;
+                        pages = nullptr;
+                        delete [] read_buffer;
+                        read_buffer = nullptr;
+                        
+                        return i * PAGE_LENGTH + j*datalength;
+
+                    }
+                    if (read_buffer[0] != packet_series && read_buffer[datalength+1] != packet_end) {
+                        return -1;
+                    }
+                    memcpy(*(pages+i) +(j*datalength), read_buffer+1, datalength);
+                }
+            }
+            
+        }      
+        
     } else {
-        uint8_t* rx_data = new uint8_t[datalength + 1]{0};
+        uint8_t* rx_data = new uint8_t[datalength + 1];
         this->serial_port.read(rx_data, datalength + 1);
         if (rx_data[datalength] != packet_end) {
             // Return error
@@ -204,6 +279,7 @@ int SerialPort::readSerialPacket(uint8_t** rx_packet, uint8_t &data_type) {
         delete [] rx_start;
         return datalength;
     }
+    return 0;
 }
 
 void SerialPort::timeout() {
