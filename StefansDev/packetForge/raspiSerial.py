@@ -290,9 +290,24 @@ def packet_processor(data):
 	else:
 		print("No packet_start")
 
+serial.timeout = 1
 while True:
+	#packet = packet_start + cmd_laser + laser_on + packet_end
+	integer_val = 42
+	#bin_int = integer_val.to_bytes(4, 'little')
+	#bin_float = struct.pack('f', 42)
+	bin_double = struct.pack('d', 42)
+	
+	packet = packet_start + packet_double + bin_double + packet_end
+	print(packet)
+	serial.write(packet)
+
+	#print(serial.read_until(b'\xf3'))
+
 	data_read = serial.read_until(b'\xf3')	
 	#data_read = serial.read()
 	print(data_read)
-	packet_processor(data_read)
+	if (len(data_read) > 0):
+		packet_processor(data_read)
+	#input("Press Enter to continue...")
 	print("Looped")
