@@ -248,10 +248,18 @@ int SerialPort::readSerialPacket(uint8_t** rx_packet, uint8_t &data_type) {
                         read_buffer[2] == packet_end &&
                         read_buffer[datalength+1] == 0) {
 
-                        rx_packet = pages;
+                        *rx_packet = new uint8_t[i*PAGE_LENGTH + j*datalength];
+                        for (int k = 0; k < i; k++) {
+                            memcpy(*(rx_packet+k*PAGE_LENGTH), *(pages+k), PAGE_LENGTH);
+                        }
+                        memcpy(*(rx_packet+i*PAGE_LENGTH), *(pages+i), j*datalength);
+
+                        delete [] pages;
                         pages = nullptr;
                         delete [] read_buffer;
                         read_buffer = nullptr;
+
+
                         
                         return i * PAGE_LENGTH + j*datalength;
 
@@ -272,7 +280,7 @@ int SerialPort::readSerialPacket(uint8_t** rx_packet, uint8_t &data_type) {
             // Return error
             return -1;
         }
-        *rx_packet = new uint8_t[datalength]{0};
+        *rx_packet = new uint8_t[datalength];
         memcpy(*rx_packet, rx_data, datalength);
         delete [] rx_data;
         data_type = rx_start[1];
