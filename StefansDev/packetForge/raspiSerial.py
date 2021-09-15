@@ -293,20 +293,48 @@ def packet_processor(data):
 serial.timeout = 1
 while True:
 	#packet = packet_start + cmd_laser + laser_on + packet_end
-	integer_val = 42
+	#integer_val = 42
 	#bin_int = integer_val.to_bytes(4, 'little')
 	#bin_float = struct.pack('f', 42)
-	bin_double = struct.pack('d', 42)
-	
-	packet = packet_start + packet_double + bin_double + packet_end
-	print(packet)
+	#bin_double = struct.pack('d', 42)
+	#bin_double1 = struct.pack('d', 84)
+	#bin_double2 = struct.pack('d', 168)
+
+	packet = packet_start + packet_series + packet_double + packet_end
+	serial.timeout = None
+	print(serial.read_until(b'\xf3'))
 	serial.write(packet)
+	serial.timeout = 1
+
+	for i in range(0,50):
+		bin_double = struct.pack('d', i)
+		packet = packet_series + bin_double + packet_end
+		serial.write(packet)
+
+	packet = packet_series + packet_final + packet_end
+	serial.write(packet)
+
+	#print(packet)
+	#serial.write(packet)
+	#packet = packet_series + bin_double1 + packet_end
+	#print(packet)
+	#serial.write(packet)
+	#packet = packet_series + bin_double2 + packet_end
+	#print(packet)
+	#serial.write(packet)
+	#packet = packet_series + packet_final + packet_end
+	#print(packet)
+	#serial.write(packet)
 
 	#print(serial.read_until(b'\xf3'))
 
 	data_read = serial.read_until(b'\xf3')	
 	#data_read = serial.read()
 	print(data_read)
+	if (len(data_read) > 0):
+		packet_processor(data_read)
+
+	data_read = serial.read_until(b'\xf3')	
 	if (len(data_read) > 0):
 		packet_processor(data_read)
 	#input("Press Enter to continue...")
