@@ -165,7 +165,6 @@ int main() {
 
     delete [] test_read;
     test_read = nullptr;
-    //raspi.writeSerialPacket(test_read);
 
     return 0;
 }
