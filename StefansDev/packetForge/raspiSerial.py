@@ -169,6 +169,7 @@ def ccdCool():
     
 
 serial = serial.Serial("/dev/ttyAMA0", baudrate=921600, write_timeout=3.0, stopbits=1)
+#serial = serial.Serial("/dev/ttyAMA0", baudrate=9600, write_timeout=3.0, stopbits=1)
 
 #call functions below-
 
@@ -300,19 +301,21 @@ while True:
 	#bin_double1 = struct.pack('d', 84)
 	#bin_double2 = struct.pack('d', 168)
 
-	packet = packet_start + packet_series + packet_double + packet_end
-	serial.timeout = None
-	print(serial.read_until(b'\xf3'))
-	serial.write(packet)
-	serial.timeout = 1
+	#packet = packet_start + packet_series + packet_double + packet_end
+	#serial.timeout = None
+	#print(serial.read_until(b'\xf3'))
+	#serial.write(packet)
+	#serial.timeout = 3
+	#time.sleep(3)
 
-	for i in range(0,50):
-		bin_double = struct.pack('d', i)
-		packet = packet_series + bin_double + packet_end
-		serial.write(packet)
+	#for i in range(0,50):
+	#	bin_double = struct.pack('d', i)
+	#	packet = packet_series + bin_double + packet_end
+	#	#print(packet)
+	#	serial.write(packet)
 
-	packet = packet_series + packet_final + packet_end
-	serial.write(packet)
+	#packet = packet_series + packet_final + packet_end
+	#serial.write(packet)
 
 	#print(packet)
 	#serial.write(packet)
@@ -328,14 +331,25 @@ while True:
 
 	#print(serial.read_until(b'\xf3'))
 
-	data_read = serial.read_until(b'\xf3')	
-	#data_read = serial.read()
-	print(data_read)
-	if (len(data_read) > 0):
-		packet_processor(data_read)
+	#data_read = serial.read_until(b'\xf3')	
+	##data_read = serial.read()
+	#print(data_read)
+	#if (len(data_read) > 0):
+	#	packet_processor(data_read)
 
-	data_read = serial.read_until(b'\xf3')	
-	if (len(data_read) > 0):
-		packet_processor(data_read)
-	#input("Press Enter to continue...")
+	#data_read = serial.read_until(b'\xf3')	
+	#print(data_read)
+	#if (len(data_read) > 0):
+	#	packet_processor(data_read)
+	##input("Press Enter to continue...")
+
+	#while True:
+	#	bytes_to_read = serial.in_waiting
+	#	print(bytes_to_read)
+	#	if(bytes_to_read > 0):
+	#		res = serial.read(bytes_to_read)
+	#		print(res)
+	#		#serial.reset_input_buffer()
+	#	time.sleep(0.2)
+
 	print("Looped")
