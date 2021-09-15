@@ -62,43 +62,7 @@ void dispatchThread() {
 }
 */
 
-//static DigitalOut led(LED1);
-
-vector<uint8_t> doubleToVector(double* double_convert) {
-    uint8_t* double_convert_pointer = (uint8_t *) double_convert; 
-    vector<uint8_t> vector_double(double_convert_pointer, double_convert_pointer + sizeof(double));
-    return vector_double;
-}
-
-vector<uint8_t> doubleToVector(double* double_convert, int size) {
-    uint8_t* double_convert_pointer = (uint8_t *) double_convert; 
-    vector<uint8_t> vector_double(double_convert_pointer, double_convert_pointer + size);
-    return vector_double;
-}
-
-vector<uint8_t> floatToVector(float* float_convert) {
-    uint8_t* float_convert_pointer = (uint8_t *) float_convert; 
-    vector<uint8_t> vector_float(float_convert_pointer, float_convert_pointer + sizeof(float));
-    return vector_float;
-}
-
-vector<uint8_t> floatToVector(float* float_convert, int size) {
-    uint8_t* float_convert_pointer = (uint8_t *) float_convert; 
-    vector<uint8_t> vector_float(float_convert_pointer, float_convert_pointer + size);
-    return vector_float;
-}
-
-vector<uint8_t> intToVector(int* int_convert) {
-    uint8_t* int_convert_pointer = (uint8_t *) int_convert; 
-    vector<uint8_t> vector_int(int_convert_pointer, int_convert_pointer + sizeof(int));
-    return vector_int;
-}
-
-vector<uint8_t> intToVector(int* int_convert, int size) {
-    uint8_t* int_convert_pointer = (uint8_t *) int_convert; 
-    vector<uint8_t> vector_int(int_convert_pointer, int_convert_pointer + size);
-    return vector_int;
-}
+static DigitalOut led(LED1);
 
 // main() runs in its own thread in the OS
 int main() {
@@ -171,9 +135,11 @@ int main() {
     uint8_t sync_end = packet_end;
     raspi.writeSerialRawRaw(&sync_end, 1);
     //ThisThread::sleep_for(1ms);
-    int length = raspi.readSerialPacket(&test_read, data_return);
-
-    
+    int length = -1;
+    while (length == -1 || length == 0) {
+        length = raspi.readSerialPacket(&test_read, data_return);
+    }
+    led = 1;
     //if (test_read[0] == cmd_laser) {
         //led = 1;
     //}
@@ -188,13 +154,14 @@ int main() {
     //for (int i = 0; i < 32; i++) {
     //    echo_back[i] = test_read[i];
     //}
+    //ThisThread::sleep_for(1500ms);
     raspi.writeSerialPacket((uint8_t *) &length, packet_int);
     double* test_read_final = (double *) test_read;
-    if (length != -1) {
+    //if (length != -1) {
         //raspi.writeSerialRawRaw(test_read, length);
         //raspi.writeSerialPacket(test_read, data_return);   
-        raspi.writeSerialSeries((uint8_t *) test_read_final, length, packet_double);
-    }
+    raspi.writeSerialSeries((uint8_t *) test_read_final, length, packet_double);
+    //}
 
     delete [] test_read;
     test_read = nullptr;

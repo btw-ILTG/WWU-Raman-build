@@ -145,6 +145,9 @@ int SerialPort::writeSerialRawRaw(uint8_t* tx_packet, int length) {
 }
 
 int SerialPort::readSerialPacket(uint8_t** rx_packet, uint8_t &data_type) {
+    if (this->serial_port.readable() != 1) {
+        return -1;
+    }
     uint8_t* rx_start = new uint8_t[2];
     this->serial_port.read(rx_start, 2);
     if (rx_start[0] != packet_start) {
@@ -238,7 +241,7 @@ int SerialPort::readSerialPacket(uint8_t** rx_packet, uint8_t &data_type) {
         
         } else if (datalength == 8) {
             uint8_t* read_buffer = new uint8_t[datalength+2];
-            for (int i = 0; i < MAX_PAGES_4; i++) {
+            for (int i = 0; i < MAX_PAGES_8; i++) {
                 pages[i] = new uint8_t[PAGE_LENGTH * datalength];
                 for (int j = 0; j < PAGE_LENGTH; j++) {
                     read_buffer[datalength+1] = 0;
@@ -260,7 +263,6 @@ int SerialPort::readSerialPacket(uint8_t** rx_packet, uint8_t &data_type) {
                         read_buffer = nullptr;
 
 
-                        
                         return i * PAGE_LENGTH + j*datalength;
 
                     }
