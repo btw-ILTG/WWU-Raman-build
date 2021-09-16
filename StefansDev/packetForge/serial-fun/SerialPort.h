@@ -1,15 +1,14 @@
 #include "mbed.h"
-#include <vector>
 
-#define TIMEOUT 2000ms
-#define MAX_PAGES_4 64 // depends on the size of data
-#define MAX_PAGES_8 32 // 4 = 4 bytes, 8 = 8 bytes
-#define PAGE_LENGTH 256
+#define MAX_PAGES 64
+#define PAGE_LENGTH 1024 // Bytes
+
+#define SERIAL_BUFFER_SIZE	256
 
 class SerialPort {
     private:
         BufferedSerial serial_port;
-        volatile bool timedout = false;
+		uint8_t serial_buffer[SERIAL_BUFFER_SIZE]{0};
 
     public:
         SerialPort(PinName tx, PinName rx, int baud);
@@ -23,5 +22,4 @@ class SerialPort {
         // packet_start data_type indicates cmd packet
         // PASS in nullptr because the pointer will be overwritten
         int readSerialPacket(uint8_t** rx_packet, uint8_t &data_type);
-        void timeout();
 };
