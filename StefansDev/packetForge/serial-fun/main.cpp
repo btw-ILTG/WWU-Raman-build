@@ -1,7 +1,6 @@
 #include "BufferedSerial.h"
 #include "PinNames.h"
 #include "ThisThread.h"
-#include "UnbufferedSerial.h"
 #include "mbed.h"
 #include "SerialPort.h"
 #include "CommandCodes.h"
@@ -36,18 +35,11 @@ void writeThread() {
         }
     }
 }
-
-
+*/
+/*
 void readThread() {
-    char buf[RX_BUFFER_SIZE] = {0};
     while (true) {
         ThisThread::flags_wait_any(READ_FLAG);
-        led = !led;
-        if (raspi.readable()) {
-            uint32_t num = raspi.read(buf, sizeof(buf));
-            raspi.write(buf, num);
-            raspi.write("\n", 1);
-        }
     }
 }
 
@@ -56,11 +48,12 @@ void dispatchThread() {
     while (true) {
         ThisThread::sleep_for(100ms);
         serialRead.flags_set(READ_FLAG);
-        ThisThread::sleep_for(100ms);
-        serialWrite.flags_set(0x2);
+        //ThisThread::sleep_for(100ms);
+        //serialWrite.flags_set(0x2);
     }
 }
 */
+
 
 static DigitalOut led(LED1);
 
@@ -72,7 +65,6 @@ int main() {
     //serialWrite.start(callback(writeThread));
 
     SerialPort raspi(D8, D2, 921600);
-    //UnbufferedSerial unbufRaspi(D8, D2, 921600);
 /*
     float number1 = -42.0;
     float number2 = -512.0;
