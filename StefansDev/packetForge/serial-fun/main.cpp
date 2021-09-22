@@ -130,16 +130,6 @@ int main() {
 
         
  
-    uint8_t* test_read = nullptr;
-    uint8_t data_return;
-    uint8_t sync_end = packet_end;
-    raspi.writeSerialRawRaw(&sync_end, 1);
-    //ThisThread::sleep_for(1ms);
-    int length = -1;
-    while (length == -1 || length == 0) {
-        length = raspi.readSerialPacket(&test_read, data_return);
-    }
-    led = 1;
     //if (test_read[0] == cmd_laser) {
         //led = 1;
     //}
@@ -155,16 +145,25 @@ int main() {
     //    echo_back[i] = test_read[i];
     //}
     //ThisThread::sleep_for(1500ms);
-    raspi.writeSerialPacket((uint8_t *) &length, packet_int);
-    double* test_read_final = (double *) test_read;
-    //if (length != -1) {
-        //raspi.writeSerialRawRaw(test_read, length);
-        //raspi.writeSerialPacket(test_read, data_return);   
-    raspi.writeSerialSeries((uint8_t *) test_read_final, length, packet_double);
-    //}
 
-    delete [] test_read;
-    test_read = nullptr;
+	while (true) {
+		uint8_t* test_read = nullptr;
+		uint8_t data_return;
+
+		int length = -1;
+		while (length == -1 || length == 0) {
+			length = raspi.readSerialPacket(&test_read, data_return);
+		}
+		//raspi.writeSerialPacket((uint8_t *) &length, packet_int);
+		double* test_read_final = (double *) test_read;
+		if (length != -1) {
+			raspi.writeSerialRawRaw(test_read, length);
+			//raspi.writeSerialPacket(test_read, data_return);   
+		}
+
+		delete [] test_read;
+		test_read = nullptr;
+	}
 
     return 0;
 }

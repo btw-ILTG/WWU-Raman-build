@@ -1,9 +1,7 @@
 #include "mbed.h"
 
-#define MAX_PAGES 64
-#define PAGE_LENGTH 1024 // Bytes
-
-#define SERIAL_BUFFER_SIZE	256
+#define SERIAL_BUFFER_SIZE	256 // bytes
+#define MAX_PACKET_SIZE		11 // Because of start + datatype + double + end
 
 class SerialPort {
     private:

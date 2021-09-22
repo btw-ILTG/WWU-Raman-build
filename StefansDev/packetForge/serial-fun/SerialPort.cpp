@@ -2,7 +2,6 @@
 #include "mbed.h"
 #include <chrono>
 #include <ratio>
-#include <vector>
 #include "SerialPort.h"
 #include "CommandCodes.h"
 
@@ -145,48 +144,71 @@ int SerialPort::writeSerialRawRaw(uint8_t* tx_packet, int length) {
 }
 
 int SerialPort::readSerialPacket(uint8_t** rx_packet, uint8_t &data_type) {
-	ssize_t num_read = this->serial_port.read(this->serial_buffer, sizeof(this->serial_buffer);
+
+	ssize_t num_read = this->serial_port.read(this->serial_buffer, sizeof(this->serial_buffer));
+
+	// If nothing read, exit now
 	if (num_read <= 0) {
 		return num_read;
 	}
 
+	// If first character doesn't signify packet_start
+	// exit now with error
 	if (this->serial_buffer[0] != packet_start) {
 		return -1;	
 	}
+	
+	// Intermediate buffer to hold data
+	uint8_t* hold_packet = new uint8_t[MAX_PACKET_SIZE];
 
-	uint8_t** pages = nullptr;
-	pages = new uint8_t*[64];
+	memcpy(hold_packet, this->serial_buffer, num_read);
 
 	int length_read = num_read;
-	do {
-		ssize_t num_read = this->serial_port.read(this->serial_buffer, sizeof(this->serial_buffer);
 
-	} while ();
+	while (length_read < 2) {
+		num_read = this->serial_port.read(this->serial_buffer, sizeof(this->serial_buffer));
+		memcpy((hold_packet+length_read), this->serial_buffer, num_read);
+		length_read += num_read;
+	}
 
-	
 	int datalength = 0;
-    switch (this->serial_buffer[1]) {
-        case packet_int:
-            datalength = 4;
-            break;
-        case packet_float:
-            datalength = 4;
-            break;
-        case packet_double:
-            datalength = 8;
-            break;
-        case cmd_laser:
-            datalength = 1;
-            break;
-        case cmd_cuvette:
-            datalength = 1;
-            break;
-        case cmd_filter:
-            datalength = 1;
-            break;
-        case cmd_ccd_pelt:
-            datalength = 1;
-            break;
-    }
-    return 0;
+
+	data_type = hold_packet[1];
+
+	switch (hold_packet[1]) {
+		case packet_int:
+			datalength = 4;
+			break;
+		case packet_float:
+			datalength = 4;
+			break;
+		case packet_double:
+			datalength = 8;
+			break;
+		case cmd_laser:
+			datalength = 1;
+			break;
+		case cmd_cuvette:
+			datalength = 1;
+			break;
+		case cmd_filter:
+			datalength = 1;
+			break;
+		case cmd_ccd_pelt:
+			datalength = 1;
+			break;
+	}
+	while (length_read < datalength + 3) {
+		num_read = this->serial_port.read(this->serial_buffer, sizeof(this->serial_buffer));
+		memcpy((hold_packet+length_read), this->serial_buffer, num_read);
+		length_read += num_read;
+	}
+	
+	*rx_packet = new uint8_t[datalength];
+	memcpy(*rx_packet, hold_packet+2, datalength);
+
+	delete [] hold_packet;
+	hold_packet = nullptr;
+	
+    return datalength;
 }
