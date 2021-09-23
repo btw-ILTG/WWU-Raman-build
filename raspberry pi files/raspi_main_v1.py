@@ -32,7 +32,7 @@ ccd_heat = chr(0xD1)
 ccd_cool = chr(0xD2)
 
 def laserOn():
-    print 'req laser on.\n'
+    print('req laser on.\n')
     serial.write(packet_start)
     serial.write(packet_flag)
     serial.write(cmd_laser)
@@ -41,7 +41,7 @@ def laserOn():
     print(serial.readline())
 
 def laserOff():
-    print 'req laser off.\n'
+    print('req laser off.\n')
     serial.write(packet_start)
     serial.write(packet_flag)
     serial.write(cmd_laser)
@@ -50,7 +50,7 @@ def laserOff():
     print(serial.readline())
 
 def shutterOpen():
-    print 'req shutter open.\n'
+    print('req shutter open.\n')
     serial.write(packet_start)
     serial.write(packet_flag)
     serial.write(cmd_laser)
@@ -59,7 +59,7 @@ def shutterOpen():
     print(serial.readline())
     
 def shutterClose():
-    print 'req shutter close.\n'
+    print('req shutter close.\n')
     serial.write(packet_start)
     serial.write(packet_flag)
     serial.write(cmd_laser)
@@ -68,7 +68,7 @@ def shutterClose():
     print(serial.readline()) 
 
 def laserTemp():
-    print 'req laser temp.\n'
+    print('req laser temp.\n')
     serial.write(packet_start)
     serial.write(packet_flag)
     serial.write(cmd_laser)
@@ -77,7 +77,7 @@ def laserTemp():
     print(serial.readline())
     
 def trayOpen():
-    print 'req tray open.\n'
+    print('req tray open.\n')
     serial.write(packet_start)
     serial.write(packet_flag)
     serial.write(cmd_cuvette)
@@ -86,7 +86,7 @@ def trayOpen():
     print(serial.readline())
 
 def trayClose():
-    print 'req tray close.\n'
+    print('req tray close.\n')
     serial.write(packet_start)
     serial.write(packet_flag)
     serial.write(cmd_cuvette)
@@ -95,7 +95,7 @@ def trayClose():
     print(serial.readline())
     
 def trayHeat():
-    print 'req tray heat.\n'
+    print('req tray heat.\n')
     serial.write(packet_start)
     serial.write(packet_flag)
     serial.write(cmd_cuvette)
@@ -104,7 +104,7 @@ def trayHeat():
     print(serial.readline())
     
 def trayCool():
-    print 'req tray cool.\n'
+    print('req tray cool.\n')
     serial.write(packet_start)
     serial.write(packet_flag)
     serial.write(cmd_cuvette)
@@ -113,7 +113,7 @@ def trayCool():
     print(serial.readline())
     
 def trayTemp():
-    print 'req tray temp.\n'
+    print('req tray temp.\n')
     serial.write(packet_start)
     serial.write(packet_flag)
     serial.write(cmd_cuvette)
@@ -122,7 +122,7 @@ def trayTemp():
     print(serial.readline())
 
 def filterForward():
-    print 'req filter forward.\n'
+    print('req filter forward.\n')
     serial.write(packet_start)
     serial.write(packet_flag)
     serial.write(cmd_filter)
@@ -131,7 +131,7 @@ def filterForward():
     print(serial.readline())
     
 def filterBack():
-    print 'req filter back.\n'
+    print('req filter back.\n')
     serial.write(packet_start)
     serial.write(packet_flag)
     serial.write(cmd_filter)
@@ -140,7 +140,7 @@ def filterBack():
     print(serial.readline())
 
 def ccdHeat():
-    print 'req ccd heat.\n'
+    print('req ccd heat.\n')
     serial.write(packet_start)
     serial.write(packet_flag)
     serial.write(cmd_ccd_pelt)
@@ -149,7 +149,7 @@ def ccdHeat():
     print(serial.readline())
     
 def ccdCool():
-    print 'req ccd cool.\n'
+    print('req ccd cool.\n')
     serial.write(packet_start)
     serial.write(packet_flag)
     serial.write(cmd_ccd_pelt)
@@ -172,14 +172,21 @@ serial = serial.Serial("/dev/ttyAMA0", baudrate=9600, write_timeout=3.0, stopbit
 #
 #ccdCool()
 
-while(1):
+#while(1):
 
-    laserOn()
-    print("laser_on")
-    #serial.write(laser_on)
-    time.sleep(5)
-    laserOff()
-    print("laser_off")
-    #serial.write(laser_off)
-    time.sleep(5)
+#    laserOn()
+#    print("laser_on")
+#    #serial.write(laser_on)
+#    time.sleep(5)
+#    laserOff()
+#    print("laser_off")
+#    #serial.write(laser_off)
+#    time.sleep(5)
 
+while (1):
+	serial.write(packet_start)
+	serial.write(packet_flag)
+	serial.write(cmd_laser)
+	serial.write(packet_end)
+	
+	print(serial.readline())
