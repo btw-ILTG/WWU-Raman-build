@@ -1,7 +1,6 @@
 #include "BufferedSerial.h"
 #include "PinNames.h"
 #include "ThisThread.h"
-#include "UnbufferedSerial.h"
 #include "mbed.h"
 #include "SerialPort.h"
 #include "CommandCodes.h"
@@ -36,18 +35,11 @@ void writeThread() {
         }
     }
 }
-
-
+*/
+/*
 void readThread() {
-    char buf[RX_BUFFER_SIZE] = {0};
     while (true) {
         ThisThread::flags_wait_any(READ_FLAG);
-        led = !led;
-        if (raspi.readable()) {
-            uint32_t num = raspi.read(buf, sizeof(buf));
-            raspi.write(buf, num);
-            raspi.write("\n", 1);
-        }
     }
 }
 
@@ -56,11 +48,12 @@ void dispatchThread() {
     while (true) {
         ThisThread::sleep_for(100ms);
         serialRead.flags_set(READ_FLAG);
-        ThisThread::sleep_for(100ms);
-        serialWrite.flags_set(0x2);
+        //ThisThread::sleep_for(100ms);
+        //serialWrite.flags_set(0x2);
     }
 }
 */
+
 
 static DigitalOut led(LED1);
 
@@ -72,7 +65,6 @@ int main() {
     //serialWrite.start(callback(writeThread));
 
     SerialPort raspi(D8, D2, 921600);
-    //UnbufferedSerial unbufRaspi(D8, D2, 921600);
 /*
     float number1 = -42.0;
     float number2 = -512.0;
@@ -130,16 +122,6 @@ int main() {
 
         
  
-    uint8_t* test_read = nullptr;
-    uint8_t data_return;
-    uint8_t sync_end = packet_end;
-    raspi.writeSerialRawRaw(&sync_end, 1);
-    //ThisThread::sleep_for(1ms);
-    int length = -1;
-    while (length == -1 || length == 0) {
-        length = raspi.readSerialPacket(&test_read, data_return);
-    }
-    led = 1;
     //if (test_read[0] == cmd_laser) {
         //led = 1;
     //}
@@ -155,17 +137,25 @@ int main() {
     //    echo_back[i] = test_read[i];
     //}
     //ThisThread::sleep_for(1500ms);
-    raspi.writeSerialPacket((uint8_t *) &length, packet_int);
-    double* test_read_final = (double *) test_read;
-    //if (length != -1) {
-        //raspi.writeSerialRawRaw(test_read, length);
-        //raspi.writeSerialPacket(test_read, data_return);   
-    raspi.writeSerialSeries((uint8_t *) test_read_final, length, packet_double);
-    //}
 
-    delete [] test_read;
-    test_read = nullptr;
-    //raspi.writeSerialPacket(test_read);
+	while (true) {
+		uint8_t* test_read = nullptr;
+		uint8_t data_return;
+
+		int length = -1;
+		while (length == -1 || length == 0) {
+			length = raspi.readSerialPacket(&test_read, data_return);
+		}
+		//raspi.writeSerialPacket((uint8_t *) &length, packet_int);
+		double* test_read_final = (double *) test_read;
+		if (length != -1) {
+			raspi.writeSerialRawRaw(test_read, length);
+			//raspi.writeSerialPacket(test_read, data_return);   
+		}
+
+		delete [] test_read;
+		test_read = nullptr;
+	}
 
     return 0;
 }
