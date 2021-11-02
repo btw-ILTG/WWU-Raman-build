@@ -18,15 +18,16 @@
 #define CUVETTE_IN4 PC_0
 
 // Filter selector
-#define FILTER_IN1 PC_14;
-#define FILTER_IN2 PC_15;
-#define FILTER_IN3 PH_0;
-#define FILTER_IN4 PH_1;
+#define FILTER_IN1 PC_14
+#define FILTER_IN2 PC_15
+#define FILTER_IN3 PH_0
+#define FILTER_IN4 PH_1
+
+// Thermometer port
+static THERMOMETER device(PC_8);
 
 #endif
 
-// Thermometer port
-THERMOMETER device(PC_8);
 
 // Raspberry Pi serial
-static BufferedSerial raspi(D8, D2, 921600);
+//static BufferedSerial raspi(D8, D2, 921600);

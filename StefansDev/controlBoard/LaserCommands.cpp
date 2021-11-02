@@ -3,9 +3,11 @@
 #include "PwmOut.h"
 
 #include "pinouts.h"
-#include "laserCommands.h"
+#include "LaserCommands.h"
 #include "DS18B20.h"
 #include "OneWireDefs.h"
+
+extern THERMOMETER device;
 
 Laser::Laser(DigitalOut laser_relay_in, PwmOut laser_servo_in) : 
         laser_relay(laser_relay_in), laser_servo(laser_servo_in) {

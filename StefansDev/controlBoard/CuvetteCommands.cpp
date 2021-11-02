@@ -1,8 +1,10 @@
 #include "mbed.h"
 
 #include "pinouts.h"
-#include "cuvetteCommands.h"
+#include "CuvetteCommands.h"
 #include <chrono>
+
+extern THERMOMETER device;
 
 Cuvette::Cuvette(DigitalOut cuvette_IN1, DigitalOut cuvette_IN2, 
                 DigitalOut cuvette_IN3, DigitalOut cuvette_IN4, 

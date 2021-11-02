@@ -1,8 +1,10 @@
 //functions for filter selection
 #include "mbed.h"
 
-#include "filterCommands.h"
+#include "FilterCommands.h"
 #include "pinouts.h"
+
+extern THERMOMETER device;
 
 Filter::Filter(DigitalOut filter_IN1, DigitalOut filter_IN2, 
                 DigitalOut filter_IN3, DigitalOut filter_IN4, 
