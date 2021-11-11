@@ -294,12 +294,33 @@ def packet_processor(data):
 serial.timeout = 1
 while True:
 	#packet = packet_start + cmd_laser + laser_on + packet_end
+	#serial.write(packet)
+
+	packet = packet_start + cmd_laser + laser_on + packet_end
+	serial.write(packet)
+	serial.read_until(b'\xf3')
+
 	#integer_val = 42
 	#bin_int = integer_val.to_bytes(4, 'little')
+	#packet = packet_start + packet_int + bin_int + packet_end
+	#print("Sent: ", packet)
+	#serial.write(packet)
+	#print(serial.read_until(b'\xf3'))
+
 	#bin_float = struct.pack('f', 42)
 	#bin_double = struct.pack('d', 42)
-	#bin_double1 = struct.pack('d', 84)
-	#bin_double2 = struct.pack('d', 168)
+	##bin_double1 = struct.pack('d', 84)
+	##bin_double2 = struct.pack('d', 168)
+
+	#packet = packet_start + packet_float + bin_float + packet_end
+	#print("Sent: ", packet)
+	#serial.write(packet)
+	#print(serial.read_until(b'\xf3'))
+
+	#packet = packet_start + packet_double + bin_double + packet_end
+	#print("Sent: ", packet)
+	#serial.write(packet)
+	#print(serial.read_until(b'\xf3'))
 
 	#packet = packet_start + packet_series + packet_double + packet_end
 	#serial.timeout = None
